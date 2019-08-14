@@ -1,0 +1,62 @@
+<!-- Sonos Control Node -->
+<!-- Controls node status, play/stop/pause + track: next/previous + volume: value/mute/unmute -->
+
+<!-- Registering Sonos Play Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('sonos-http-api-notify',{
+        category: 'Sonos',
+        defaults: {    
+            confignode: {value:"", type:"sonos-http-api-config"},            
+            preset: {value:"" },
+            clip: {value:"" },
+            clipall: {value:"" },			
+        },
+        inputs:1,                       // set the number of inputs - only 0 or 1
+        outputs:0,                      // set the number of outputs - 0 to n
+        icon: "better_sonos.png",       // saved in  icons/myicon.png
+        color: "#FFFFFF", 
+        label: function() {
+            return this.name || "Notify Sonos";
+        },
+        paletteLabel: "Notify"        
+    });
+</script>
+
+<!-- Setting design and inputs for node -->
+<script type="text/x-red" data-template-name="sonos-http-api-notify">
+     <div class="form-row">
+        <label for="node-input-confignode"> Sonos Config Node</label>
+        <input type="text" id="node-input-confignode">
+    </div>
+
+    <div class="form-row toggle">
+		<label for="node-input-preset"><i class="fa fa-tag"></i> ClipAll</label>
+        <input type="text" id="node-input-preset" placeholder="ClipUri">
+	</div>
+
+    <div class="form-row toggle">
+		<label for="node-input-clip"><i class="fa fa-tag"></i> Clip</label>
+        <input type="text" id="node-input-clip" placeholder="ClipUri">
+	</div>
+	
+    <div class="form-row toggle">
+		<label for="node-input-clipall"><i class="fa fa-tag"></i> ClipAll</label>
+        <input type="text" id="node-input-clipall" placeholder="ClipUri">
+	</div>
+	
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Sonos Config Node Name">
+    </div>
+</script>
+
+
+<!-- Simple Help Text -->
+<script type="text/x-red" data-help-name="sonos-http-api-notify">
+    <!--
+    <p>A node to control Sonos device</p>
+    <p>
+        Control command can be sent either via simple input payload, or directly set within the node controls as a standard action.
+    </p>
+
+</script>

@@ -1,0 +1,88 @@
+<!-- Sonos Get CurrentTrack Node -->
+<!-- just returns the currently played track from a specific SONOS player -->
+
+<!-- Registering Sonos CurrentTrack Node -->
+<script type="text/javascript">
+	RED.nodes.registerType('sonos-http-api-status',{
+        category: 'Sonos',
+        defaults: {    
+            confignode: {value:"", type:"sonos-http-api-config"},
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "better_sonos.png",       // saved in  icons/myicon.png
+        color: "#FFFFFF", 
+        label: function() {
+            return this.name || "Sonos Status";
+        },
+        paletteLabel: "Sonos Status"
+    });
+</script>
+
+<!-- Setting design and inputs for node -->
+<script type="text/x-red" data-template-name="sonos-http-api-status">
+	<div class="form-row">
+        <label for="node-input-confignode"> Sonos Config Node</label>
+        <input type="text" id="node-input-confignode">
+    </div>
+
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>	
+</script>
+
+
+<!-- Simple Help Text -->
+<script type="text/x-red" data-help-name="sonos-http-api-status">
+    <p>
+        A node to retrieve current track info, volume, mute, playing state, etc. upon triggered
+    </p>
+    <h3>Outputs</h3>
+    
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">string</span>
+        </dt>
+        <dd> current track's title, if playing
+        </dd>
+
+        <dt>state
+            <span class="property-type">string | playing/stopped/paused</span>
+        </dt>
+        <dd> current playing state
+        </dd>
+
+        <dt>muted
+            <span class="property-type">boolean | true-false</span>
+        </dt>
+        <dd> current mute status
+             <br/>
+             When muted, the volume value is not affected. In other words, volume value may not be 0 when speaker is muted.
+        </dd>
+
+        <dt>volume
+            <span class="property-type">int | 0-100</span>
+        </dt>
+        <dd> current volume value
+             <br/>
+             When muted, the volume value is not affected. In other words, volume value may not be not be 0 when speaker is muted.
+        </dd>
+
+        <dt>normalized_volume <span class="property-type">float | 0-1</span></dt>
+        <dd> normalized current volume value
+             <br/>value ranges from 0.0 to 1.0. Similar to above <strong><i>volume</i></strong> parameter, except this has been normalized to [0.0 - 1.0] range.
+        </dd>
+        
+        <dt>track 
+            <span class="property-type">object</span></dt>
+        <dd> full track info object
+        </dd>
+
+        <dt>track.albumArtURL
+            <span class="property-type">string/url</span></dt>
+        <dd> full url for the album art
+        </dd>
+    </dl>
+</script>

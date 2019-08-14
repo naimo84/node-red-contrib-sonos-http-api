@@ -1,0 +1,146 @@
+<!-- Sonos Control Node -->
+<!-- Controls node status, play/stop/pause + track: next/previous + volume: value/mute/unmute -->
+
+<!-- Registering Sonos Play Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('sonos-http-api-control',{
+        category: 'Sonos',
+        defaults: {    
+            confignode: {value:"", type:"sonos-http-api-config"},
+            name: {value:""},
+			mode: {value:""},
+			track: {value:""},
+            volume: {value:""},
+            clipall_value: {value:"" },
+			volume_value: {value:""}     // TODO: check if value between 0..100
+        },
+        inputs:1,                       // set the number of inputs - only 0 or 1
+        outputs:0,                      // set the number of outputs - 0 to n
+        icon: "better_sonos.png",       // saved in  icons/myicon.png
+        color: "#FFFFFF", 
+        label: function() {
+            return this.name || "Control Sonos";
+        },
+        paletteLabel: "Control",
+		// TODO: On change, focus and hide.
+        oneditprepare: function () {
+          $('#node-input-volume').change(function () {
+            var value = $('#node-input-volume').val()
+            $('.form-row.toggle').hide()
+            $('.form-row.' + value).show()
+		  })
+		},
+        
+    });
+</script>
+
+<!-- Setting design and inputs for node -->
+<script type="text/x-red" data-template-name="sonos-http-api-control">
+     <div class="form-row">
+        <label for="node-input-confignode"> Sonos Config Node</label>
+        <input type="text" id="node-input-confignode">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-tag"></i> Mode</label>
+		<select type="text" id="node-input-mode" style="display: inline-block; width: 70%;" >
+			<option value=""></option>
+            <option value="play">Play</option>
+            <option value="pause">Pause</option>
+            <option value="stop">Stop</option>			
+        </select>
+    </div>
+
+	<div class="form-row">
+        <label for="node-input-track"><i class="fa fa-tag"></i> Track</label>
+		<select type="text" id="node-input-track" style="display: inline-block; width: 70%;" >
+			<option value=""></option>
+            <option value="next">Next</option>
+            <option value="previous">Previous</option>			
+        </select>
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-volume"><i class="fa fa-tag"></i> Volume</label>
+		<select type="text" id="node-input-volume" style="display: inline-block; width: 70%;" >
+			<option value="empty"></option>
+            <option value="volume">Set volume</option>
+            <option value="mute">Mute</option>	
+			<option value="unmute">Unmute</option>
+			<option value="vol_up">Volume Up</option>
+			<option value="vol_down">Volume Down</option>			
+        </select>
+    </div>
+	
+	<div class="form-row toggle volume">
+		<label for="node-input-volume_value"><i class="fa fa-tag"></i> Value</label>
+        <input type="text" id="node-input-volume_value" placeholder="Volume Value 0..100">
+	</div>
+
+	<div class="form-row toggle vol_up">
+		<label for="node-input-volume_value"><i class="fa fa-tag"></i> Value</label>
+        <input type="text" id="node-input-volume_value" placeholder="Volume Value 0..100">
+	</div>
+
+	<div class="form-row toggle vol_down">
+		<label for="node-input-volume_value"><i class="fa fa-tag"></i> Value</label>
+        <input type="text" id="node-input-volume_value" placeholder="Volume Value 0..100">
+	</div>
+
+    <div class="form-row toggle">
+		<label for="node-input-clipall_value"><i class="fa fa-tag"></i> ClipAll</label>
+        <input type="text" id="node-input-clipall_value" placeholder="ClipUri">
+	</div>
+	
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Sonos Config Node Name">
+    </div>
+</script>
+
+
+<!-- Simple Help Text -->
+<script type="text/x-red" data-help-name="sonos-http-api-control">
+    <!--
+    <p>A node to control Sonos device</p>
+    <p>
+        Control command can be sent either via simple input payload, or directly set within the node controls as a standard action.
+    </p>
+
+    <h3>How to use</h3>
+    <p><a href="https://raw.githubusercontent.com/originallyus/node-red-contrib-sonos-http-api/master/screenshot.png" target="_blank"><img src="https://raw.githubusercontent.com/originallyus/node-red-contrib-sonos-http-api/master/screenshot.png"></a></p>
+
+    <p>
+        Developed by the super cool folks at <a href="http://originally.us" target="_blank"><strong>Originally US</strong></a>
+    <p/>
+	
+    <h3>Input (optional)</h3>
+    
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">string</span>
+        </dt>
+        <dd>Accepted values:
+          <br/> • "stop": stop playing
+          <br/> • "pause": pause playing
+          <br/> • "play": resume play
+          <br/> • "playpause": toggle play/pause state
+          <br/> • "next": play next track
+          <br/> • "previous": play previous track
+          <br/> • "mute": mute volume
+          <br/> • "unmute": unmute volume
+          <br/> • number: 0-100: set volume to N%
+          <br/> • "vol_up": increase volume by 5%
+          <br/> • "vol_down": decrease volume by 5%
+          <br/> • "vol+": increase volume by 5%
+          <br/> • "vol-": decrease volume by 5%
+          <br/> • +N: increase volume by N%
+          <br/> • -N: decrease volume by N%
+          <br/> • leave: leave current group
+          <br/> • join: join another device in group (supply msg.topic with name of another device in group, case insensitive)
+        </dd>
+
+        <p><a href="https://raw.githubusercontent.com/originallyus/node-red-contrib-sonos-http-api/master/screenshot_input.png" target="_blank"><img src="https://raw.githubusercontent.com/originallyus/node-red-contrib-sonos-http-api/master/screenshot_input.png"></a></p>
+    </dl>
+-->
+</script>
