@@ -49,7 +49,7 @@ module.exports = function (RED) {
 			});
 		});
 	}
-
+	
 	//------------------------------------------------------------------------------------
 
 	function handleInputMsg(node, configNode:ConfigNode, msg: Message, name) {

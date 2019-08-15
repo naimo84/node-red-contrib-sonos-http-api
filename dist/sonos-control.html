@@ -3,34 +3,62 @@
 
 <!-- Registering Sonos Play Node -->
 <script type="text/javascript">
-    RED.nodes.registerType('sonos-http-api-control',{
+    RED.nodes.registerType('sonos-http-api-control', {
         category: 'Sonos',
-        defaults: {    
-            confignode: {value:"", type:"sonos-http-api-config"},
-            name: {value:""},
-			mode: {value:""},
-			track: {value:""},
-            volume: {value:""},
-            clipall_value: {value:"" },
-			volume_value: {value:""}     // TODO: check if value between 0..100
+        defaults: {
+            confignode: { value: "", type: "sonos-http-api-config" },
+            name: { value: "" },
+            mode: { value: "" },
+            track: { value: "" },
+            volume: { value: "" },
+            clipall_value: { value: "" },
+            volume_value: { value: "" }     // TODO: check if value between 0..100
         },
-        inputs:1,                       // set the number of inputs - only 0 or 1
-        outputs:0,                      // set the number of outputs - 0 to n
+        inputs: 1,                       // set the number of inputs - only 0 or 1
+        outputs: 0,                      // set the number of outputs - 0 to n
         icon: "better_sonos.png",       // saved in  icons/myicon.png
-        color: "#FFFFFF", 
-        label: function() {
+        color: "#FFFFFF",
+        label: function () {
             return this.name || "Control Sonos";
         },
         paletteLabel: "Control",
-		// TODO: On change, focus and hide.
+        // TODO: On change, focus and hide.
         oneditprepare: function () {
-          $('#node-input-volume').change(function () {
-            var value = $('#node-input-volume').val()
-            $('.form-row.toggle').hide()
-            $('.form-row.' + value).show()
-		  })
-		},
-        
+            $('#node-input-volume').change(function () {
+                var value = $('#node-input-volume').val()
+                $('.form-row.toggle').hide()
+                $('.form-row.' + value).show()
+            })
+
+            try {
+                $("#node-input-player").autocomplete("destroy");
+            } catch (err) { }
+
+            $("#node-config-lookup-player").click(function () {
+                $("#node-config-lookup-player-icon").removeClass('fa-search');
+                $("#node-config-lookup-player-icon").addClass('spinner');
+                $("#node-config-lookup-player").addClass('disabled');
+
+                $.getJSON('sonosSearch', function (data) {
+                    $("#node-config-lookup-player-icon").addClass('fa-search');
+                    $("#node-config-lookup-player-icon").removeClass('spinner');
+                    $("#node-config-lookup-player").removeClass('disabled');
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        dataArray.push(element);
+                    });
+                    $("#node-input-player").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-player").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
+
     });
 </script>
 
@@ -40,7 +68,13 @@
         <label for="node-input-confignode"> Sonos Config Node</label>
         <input type="text" id="node-input-confignode">
     </div>
-	
+	<div class="form-row">
+        <label for="node-input-player"><i class="fa fa-barcode" aria-hidden="true"></i> Player</label>
+        <input type="text" id="node-input-player" style="width:60%;" placeholder="">
+        <a id="node-config-lookup-player" class="btn">
+            <i id="node-config-lookup-player-icon" class="fa fa-search">           
+            </i></a>
+    </div>
 	<div class="form-row">
         <label for="node-input-mode"><i class="fa fa-tag"></i> Mode</label>
 		<select type="text" id="node-input-mode" style="display: inline-block; width: 70%;" >

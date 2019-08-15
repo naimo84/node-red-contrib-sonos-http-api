@@ -11,36 +11,7 @@
         label: function() {
             return this.name;
         },
-        oneditprepare: function () {
-
-          try {
-            $("#node-config-input-player").autocomplete( "destroy" );
-          } catch(err) { }
-
-          $("#node-config-lookup-player").click(function() {
-              $("#node-config-lookup-player-icon").removeClass('fa-search');
-              $("#node-config-lookup-player-icon").addClass('spinner');
-              $("#node-config-lookup-player").addClass('disabled');
-              
-              $.getJSON('sonosSearch',function(data) {
-                  $("#node-config-lookup-player-icon").addClass('fa-search');
-                  $("#node-config-lookup-player-icon").removeClass('spinner');
-                  $("#node-config-lookup-player").removeClass('disabled');
-                  var dataArray = [];
-                  $.each(data, function(i, element){
-                      dataArray.push(element);
-                  });
-                  $("#node-config-input-player").autocomplete({
-                      source:dataArray,
-                      minLength:0,
-                      close: function( event, ui ) {
-                          $("#node-config-input-player").autocomplete( "destroy" );
-                      }
-                  }).autocomplete("search","");
-              });
-          });
-
-        },
+        
         oneditsave: function () {
           var node = this;
           node.language = $("#node-input-language").val();
@@ -65,11 +36,5 @@
         <label for="node-config-input-password"><i class="fa fa-tag"></i> password</label>
         <input type="text" id="node-config-input-password" placeholder="password">
     </div>   
-    <div class="form-row">
-        <label for="node-config-input-player"><i class="fa fa-barcode" aria-hidden="true"></i> Player</label>
-        <input type="text" id="node-config-input-player" style="width:60%;" placeholder="">
-        <a id="node-config-lookup-player" class="btn">
-            <i id="node-config-lookup-player-icon" class="fa fa-search">           
-            </i></a>
-    </div>
+    
 </script>

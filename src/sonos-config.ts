@@ -2,14 +2,15 @@ import SonosClient from './SonosClient';
 
 module.exports = function (RED:any) {
     'use strict';
-    
+    var config2:any;
+
     function SonosPlayerNode(config) {
         RED.nodes.createNode(this, config);
-        this.ip = config.ip;
-        this.player = config.player;
+        this.ip = config.ip;       
         this.name = config.name;
         this.username = config.username;
         this.password = config.password;
+        config2=config;
     }
    
     RED.httpAdmin.get("/sonosSearch", function (req, res) {
@@ -22,7 +23,7 @@ module.exports = function (RED:any) {
 
     function discoverSonos(discoveryCallback) {
         RED.log.debug("Start Sonos discovery");       
-        var client = new SonosClient(null,this);	      
+        var client = new SonosClient(null,config2);	      
         client.getDevices(discoveryCallback);
     }
 
