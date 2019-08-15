@@ -22,7 +22,7 @@ module.exports = function (RED:any) {
 
     function discoverSonos(discoveryCallback) {
         RED.log.debug("Start Sonos discovery");       
-        var client = new SonosClient();	      
+        var client = new SonosClient(null,this);	      
         client.getDevices(discoveryCallback);
     }
 
