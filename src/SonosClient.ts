@@ -115,7 +115,7 @@ export default class SonosClient {
                     for (var coordinator of response.data) {
                         devices.push({
                             label: coordinator.coordinator.roomName,
-                            value: coordinator.coordinator.uuid
+                            value: coordinator.coordinator.roomName
                         });
                     }
                     discoveryCallback(devices);

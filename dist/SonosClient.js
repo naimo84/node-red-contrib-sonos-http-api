@@ -54,7 +54,7 @@ var SonosClient = /** @class */ (function () {
                     var coordinator = _a[_i];
                     devices.push({
                         label: coordinator.coordinator.roomName,
-                        value: coordinator.coordinator.uuid
+                        value: coordinator.coordinator.roomName
                     });
                 }
                 discoveryCallback(devices);
