@@ -15,7 +15,9 @@ If you like it, please consider:
 ## Getting started
 
 First of all install [Node-RED](http://nodered.org/docs/getting-started/installation)
+
 Then you need [sonos-http-api](https://github.com/jishi/node-sonos-http-api)
+
 In the future I will provide a docker image for sonos-http-api.
 
 ## Develop
