@@ -29,6 +29,8 @@ In the future I will provide a docker image for sonos-http-api.
 * cd ~/.node-red 
 * npm install /path/to/node-red-contrib-sonos-http-api
 
+<img src="https://img.shields.io/npm/dy/node-red-contrib-sonos-http-api?style=for-the-badge"/>
+
 ## Usage
 
 ### Configuration:
@@ -36,6 +38,12 @@ In the future I will provide a docker image for sonos-http-api.
 - ***username*** if set, username of sonos-http-api 
 - ***password*** if set, password of sonos-http-api 
 - ***player*** Sonos playername 
+
+A short sample flow can be found here:
+
+[examples/play_notify.json](examples/play_notify.json)
+
+![play_notify](examples/play_notify.png)
 
 ## Credits
 * Thanks for the great sonos-http-api https://github.com/jishi/node-sonos-http-api

@@ -8,11 +8,6 @@ var SonosHelper = /** @class */ (function () {
             node.status({ fill: "red", shape: "ring", text: "please select a config node" });
             return false;
         }
-        var hasPlayer = node.player !== undefined && node.player !== null && node.player.trim().length > 3;
-        if (!hasPlayer) {
-            node.status({ fill: "red", shape: "ring", text: "missing player name" });
-            return false;
-        }
         node.status({});
         return true;
     };

@@ -1,0 +1,180 @@
+[
+    {
+        "id": "ff776b13.2b49d8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "ec1c3b6f.9a2008",
+        "type": "sonos-http-api-control",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "mode": "",
+        "track": "",
+        "volume": "",
+        "clipall_value": "",
+        "volume_value": "",
+        "player": "",
+        "x": 420,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "3226cdbf.09ff32",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "mqtt-play",
+        "topic": "sonos/set/livingroom/control",
+        "payload": "play",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "ec1c3b6f.9a2008"
+            ]
+        ]
+    },
+    {
+        "id": "d485dbcc.055118",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "node-pause",
+        "topic": "",
+        "payload": "pause",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [
+                "ec1c3b6f.9a2008"
+            ]
+        ]
+    },
+    {
+        "id": "a45e0270.af112",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "node-play",
+        "topic": "",
+        "payload": "play",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 40,
+        "wires": [
+            [
+                "ec1c3b6f.9a2008"
+            ]
+        ]
+    },
+    {
+        "id": "bfc984d0.a6fe38",
+        "type": "sonos-http-api-notify",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "preset": "",
+        "clip": "",
+        "clipall": "",
+        "player": "",
+        "x": 410,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "70a6712c.44f93",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "mqtt-notify",
+        "topic": "sonos/set/livingroom/notify",
+        "payload": "{\"command\":\"clip\" , \"uri\": \"close_window.mp3\"}",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "bfc984d0.a6fe38"
+            ]
+        ]
+    },
+    {
+        "id": "add9d445.69cab8",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "node-notify",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "e7c9835a.8c452"
+            ]
+        ]
+    },
+    {
+        "id": "d34a2050.49861",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "mqtt-pause",
+        "topic": "sonos/set/livingroom/control",
+        "payload": "pause",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "ec1c3b6f.9a2008"
+            ]
+        ]
+    },
+    {
+        "id": "e7c9835a.8c452",
+        "type": "sonos-http-api-notify",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "preset": "",
+        "clip": "open_window.mp3",
+        "clipall": "",
+        "player": "livingroom",
+        "x": 410,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8c689c5f.117",
+        "type": "sonos-http-api-config",
+        "z": "",
+        "name": "Sonos",
+        "ip": "http://sonos:5005",
+        "username": "admin",
+        "password": "password"
+    }
+]
