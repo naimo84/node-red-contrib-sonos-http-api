@@ -20,6 +20,7 @@ var SonosHelper = /** @class */ (function () {
         var isValid = this.validateConfigNode(node, configNode);
         if (!isValid)
             return;
+        configNode.player = node.player;
         if (callback)
             callback(configNode);
         return;

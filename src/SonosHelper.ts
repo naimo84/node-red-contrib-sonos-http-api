@@ -1,46 +1,44 @@
 ﻿'use strict';
 
-export class SonosHelper 
-{
+export class SonosHelper {
     constructor() {
     }
 
-    validateConfigNode(node, configNode)
-    {
+    validateConfigNode(node, configNode) {
         if (configNode === undefined || configNode === null) {
-            node.status({fill:"red", shape:"ring", text:"please select a config node"});
+            node.status({ fill: "red", shape: "ring", text: "please select a config node" });
             return false;
         }
-        
-        var hasPlayer = node.player !== undefined &&  node.player !== null &&  node.player.trim().length > 3;
+
+        var hasPlayer = node.player !== undefined && node.player !== null && node.player.trim().length > 3;
         if (!hasPlayer) {
-            node.status({fill:"red", shape:"ring", text:"missing player name"});
+            node.status({ fill: "red", shape: "ring", text: "missing player name" });
             return false;
         }
-        
+
         node.status({});
         return true;
     }
 
-    preprocessInputMsg(node, configNode, msg, callback)
-    {
+    preprocessInputMsg(node, configNode, msg, callback) {
         var isValid = this.validateConfigNode(node, configNode);
         if (!isValid)
             return;
-        
+
+        configNode.player = node.player;
+
         if (callback)
             callback(configNode);
-        return;        
+        return;
     }
-  
 
-    handleSonosApiRequest(node, err, result, msg, successString, failureString)
-    {
+
+    handleSonosApiRequest(node, err, result, msg, successString, failureString) {
         if (err) {
             node.error(err);
             if (!failureString)
                 failureString = "failed to execute request";
-            node.status({fill:"red", shape:"dot", text:failureString});
+            node.status({ fill: "red", shape: "dot", text: failureString });
             return;
         }
 
@@ -48,7 +46,7 @@ export class SonosHelper
 
         if (!successString)
             successString = "request success";
-        node.status({fill:"blue", shape:"dot", text:successString});
+        node.status({ fill: "blue", shape: "dot", text: successString });
     }
 }
 
