@@ -67,7 +67,7 @@ module.exports = function (RED) {
 				return;
 			}
 
-			client.preset(preset, function (err, result) {
+			client.preset(preset, (err, result) => {
 				helper.handleSonosApiRequest(node, err, result, msg, "preset played " + preset, null);
 			});
 
@@ -84,7 +84,7 @@ module.exports = function (RED) {
 				return;
 			}
 			node.context().set('clip', true);
-			client.clipall(clip, function (err, result) {
+			client.clipall(clip, (err, result) => {
 				helper.handleSonosApiRequest(node, err, result, msg, "clip " + clip, null);
 			});
 			setTimeout(() => {
@@ -93,19 +93,19 @@ module.exports = function (RED) {
 		}
 		else if (node.notify !== undefined || node.notify !== null) {
 			let _songuri = node.notify;
-			if(node.context().get('clip') === true){
+			if (node.context().get('clip') === true) {
 				node.status({ fill: "red", shape: "dot", text: "already clip" });
 				return;
 			}
 
-			node.context().set('clip', true);		
-			client.clip(_songuri, 30, function (err, result) {
+			node.context().set('clip', true);
+			client.clip(_songuri, 30, (err, result) => {
 				helper.handleSonosApiRequest(node, err, result, msg, null, null);
 			});
-			
+
 			setTimeout(() => {
 				node.context().set('clip', false);
-			}, 10 * 1000);			
+			}, 10 * 1000);
 		}
 
 		node.send(msg);

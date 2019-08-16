@@ -151,8 +151,10 @@ export default class SonosClient {
 
     httpCall<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
         let urls = [this.configNode.ip, this.name, action];
+        
         urls = urls.concat(args);
         let url = urls.join('/');
+        console.log(url);
         let options = {};
         if (this.configNode.username) {
             options = {
