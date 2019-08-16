@@ -12,6 +12,7 @@ module.exports = function (RED) {
 		var node = this;
 		var configNode = RED.nodes.getNode(n.confignode);
 		this._configNode = configNode;
+		node.player = n.player;
 		var isValid = helper.validateConfigNode(node, configNode);
 		if (!isValid)
 			return;

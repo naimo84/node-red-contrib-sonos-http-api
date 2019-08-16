@@ -20,6 +20,7 @@ interface Message {
 }
 
 interface SonosNode extends Node {
+	player?: string;
 	mode?: string;
 	track?: string;
 	volume?: string;
@@ -35,7 +36,7 @@ module.exports = function (RED) {
 		RED.nodes.createNode(this, config);
 		var node: SonosNode = this;
 		var configNode = RED.nodes.getNode(config.confignode);
-
+		node.player = config.player;
 		var isValid = helper.validateConfigNode(node, configNode);
 		if (!isValid)
 			return;
@@ -45,6 +46,7 @@ module.exports = function (RED) {
 		node.mode = config.mode;
 		node.track = config.track;
 		node.volume = config.volume;
+		
 		if (node.volume === "empty")
 			node.volume = "";
 		node.volume_value = config.volume_value;
