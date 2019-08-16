@@ -15,25 +15,8 @@ If you like it, please consider:
 ## Getting started
 
 First of all install [Node-RED](http://nodered.org/docs/getting-started/installation)
-
-```
-$ sudo npm install -g node-red
-```
-
-Then open  the user data directory  `~/.node-red`  and install the package
-
-```
-$ cd ~/.node-red
-$ npm install node-red-contrib-sonos-http-api
-```
-
-Or search for sonos-http-api in the manage palette menu
-
-Then run
-
-```
-node-red
-```
+Then you need [sonos-http-api](https://github.com/jishi/node-sonos-http-api)
+In the future I will provide a docker image for sonos-http-api.
 
 ## Develop
 
@@ -48,6 +31,9 @@ node-red
 
 ### Configuration:
 - ***hostname*** hostname of sonos-http-api (e.g. "http://sonos:5005")
+- ***username*** if set, username of sonos-http-api 
+- ***password*** if set, password of sonos-http-api 
+- ***player*** Sonos playername 
 
 ## Credits
 * Thanks for the great sonos-http-api https://github.com/jishi/node-sonos-http-api
