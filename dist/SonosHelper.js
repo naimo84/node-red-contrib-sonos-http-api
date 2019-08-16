@@ -8,12 +8,11 @@ var SonosHelper = /** @class */ (function () {
             node.status({ fill: "red", shape: "ring", text: "please select a config node" });
             return false;
         }
-        var hasIpName = configNode.name !== undefined && configNode.name !== null && configNode.name.trim().length > 3;
-        if (!hasIpName) {
-            node.status({ fill: "red", shape: "ring", text: "missing serial number or IP Address in config node" });
+        var hasPlayer = node.player !== undefined && node.player !== null && node.player.trim().length > 3;
+        if (!hasPlayer) {
+            node.status({ fill: "red", shape: "ring", text: "missing player name" });
             return false;
         }
-        //clear node status
         node.status({});
         return true;
     };
@@ -28,7 +27,6 @@ var SonosHelper = /** @class */ (function () {
     SonosHelper.prototype.handleSonosApiRequest = function (node, err, result, msg, successString, failureString) {
         if (err) {
             node.error(err);
-            console.log(err);
             if (!failureString)
                 failureString = "failed to execute request";
             node.status({ fill: "red", shape: "dot", text: failureString });

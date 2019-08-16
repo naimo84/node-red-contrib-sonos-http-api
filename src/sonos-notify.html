@@ -1,57 +1,53 @@
-<!-- Sonos Control Node -->
-<!-- Controls node status, play/stop/pause + track: next/previous + volume: value/mute/unmute -->
-
-<!-- Registering Sonos Play Node -->
 <script type="text/javascript">
-    RED.nodes.registerType('sonos-http-api-notify',{
+    RED.nodes.registerType('sonos-http-api-notify', {
         category: 'Sonos',
-        defaults: {    
-            confignode: {value:"", type:"sonos-http-api-config"},            
-            preset: {value:"" },
-            clip: {value:"" },
-            clipall: {value:"" },			
+        defaults: {
+            confignode: { value: "", type: "sonos-http-api-config" },
+            preset: { value: "" },
+            clip: { value: "" },
+            clipall: { value: "" },
+            player: { value: "" }
         },
-        inputs:1,                       // set the number of inputs - only 0 or 1
-        outputs:0,                      // set the number of outputs - 0 to n
-        icon: "better_sonos.png",       // saved in  icons/myicon.png
-        color: "#FFFFFF", 
-        label: function() {
+        inputs: 1,                       
+        outputs: 0,                     
+        icon: "sonos.png",      
+        color: "#FFFFFF",
+        label: function () {
             return this.name || "Notify Sonos";
         },
-        paletteLabel: "Notify"        ,oneditprepare: function () {
+        paletteLabel: "Notify",
+        oneditprepare: function () {
+            try {
+                $("#node-input-player").autocomplete("destroy");
+            } catch (err) { }
 
-try {
-  $("#node-input-player").autocomplete( "destroy" );
-} catch(err) { }
+            $("#node-config-lookup-player").click(function () {
+                $("#node-config-lookup-player-icon").removeClass('fa-search');
+                $("#node-config-lookup-player-icon").addClass('spinner');
+                $("#node-config-lookup-player").addClass('disabled');
 
-$("#node-config-lookup-player").click(function() {
-    $("#node-config-lookup-player-icon").removeClass('fa-search');
-    $("#node-config-lookup-player-icon").addClass('spinner');
-    $("#node-config-lookup-player").addClass('disabled');
-    
-    $.getJSON('sonosSearch',function(data) {
-        $("#node-config-lookup-player-icon").addClass('fa-search');
-        $("#node-config-lookup-player-icon").removeClass('spinner');
-        $("#node-config-lookup-player").removeClass('disabled');
-        var dataArray = [];
-        $.each(data, function(i, element){
-            dataArray.push(element);
-        });
-        $("#node-input-player").autocomplete({
-            source:dataArray,
-            minLength:0,
-            close: function( event, ui ) {
-                $("#node-input-player").autocomplete( "destroy" );
-            }
-        }).autocomplete("search","");
-    });
-});
+                $.getJSON('sonosSearch', function (data) {
+                    $("#node-config-lookup-player-icon").addClass('fa-search');
+                    $("#node-config-lookup-player-icon").removeClass('spinner');
+                    $("#node-config-lookup-player").removeClass('disabled');
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        dataArray.push(element);
+                    });
+                    $("#node-input-player").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-player").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
 
-},
+        },
     });
 </script>
 
-<!-- Setting design and inputs for node -->
 <script type="text/x-red" data-template-name="sonos-http-api-notify">
      <div class="form-row">
         <label for="node-input-confignode"> Sonos Config Node</label>
@@ -65,8 +61,8 @@ $("#node-config-lookup-player").click(function() {
             </i></a>
     </div>
     <div class="form-row toggle">
-		<label for="node-input-preset"><i class="fa fa-tag"></i> ClipAll</label>
-        <input type="text" id="node-input-preset" placeholder="ClipUri">
+		<label for="node-input-preset"><i class="fa fa-tag"></i> Preset</label>
+        <input type="text" id="node-input-preset" placeholder="Presetname">
 	</div>
 
     <div class="form-row toggle">
@@ -86,7 +82,6 @@ $("#node-config-lookup-player").click(function() {
 </script>
 
 
-<!-- Simple Help Text -->
 <script type="text/x-red" data-help-name="sonos-http-api-notify">
     <!--
     <p>A node to control Sonos device</p>

@@ -36,6 +36,118 @@ var SonosClient = /** @class */ (function () {
     SonosClient.prototype.getCurrentState = function (stateCallback) {
         this.httpCall('state', null, stateCallback);
     };
+    SonosClient.prototype.getDevices = function (discoveryCallback) {
+        var options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            };
+        }
+        axios_1.default.get(this.configNode.ip + '/zones', options)
+            .then(function (response) {
+            if (response.data) {
+                var devices = [];
+                for (var _i = 0, _a = response.data; _i < _a.length; _i++) {
+                    var coordinator = _a[_i];
+                    devices.push({
+                        label: coordinator.coordinator.roomName,
+                        value: coordinator.coordinator.uuid
+                    });
+                }
+                discoveryCallback(devices);
+            }
+        }).catch(function (err) {
+            console.log(err);
+        });
+    };
+    SonosClient.prototype.getFavourites = function (discoveryCallback) {
+        var urls = [this.configNode.ip, this.name];
+        var url = urls.join('/');
+        var options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            };
+        }
+        axios_1.default.get(url + '/favourites', options)
+            .then(function (response) {
+            if (response.data) {
+                var favourites = response.data;
+                discoveryCallback(favourites);
+            }
+        }).catch(function (err) {
+            console.log(err);
+        });
+    };
+    SonosClient.prototype.httpCall = function (action, property, callback) {
+        var args = [];
+        for (var _i = 3; _i < arguments.length; _i++) {
+            args[_i - 3] = arguments[_i];
+        }
+        var urls = [this.configNode.ip, this.name, action];
+        urls = urls.concat(args);
+        var url = urls.join('/');
+        var options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            };
+        }
+        axios_1.default.get(url, options)
+            .then(function (response) {
+            if (response.data) {
+                if (property) {
+                    var data = Object(response.data);
+                    if (Reflect.has(data, property)) {
+                        callback(null, Reflect.get(data, property));
+                    }
+                }
+                else {
+                    callback(null, response.data);
+                }
+            }
+        }).catch(function (err) {
+            callback(err, null);
+        });
+    };
+    SonosClient.prototype.httpCallWithoutDevice = function (action, property, callback) {
+        var args = [];
+        for (var _i = 3; _i < arguments.length; _i++) {
+            args[_i - 3] = arguments[_i];
+        }
+        var urls = [this.configNode.ip, action];
+        urls = urls.concat(args);
+        var url = urls.join('/');
+        var options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            };
+        }
+        axios_1.default.get(url, options)
+            .then(function (response) {
+            if (response.data) {
+                var data = Object(response.data);
+                if (Reflect.has(data, property)) {
+                    callback(null, Reflect.get(data, property));
+                }
+            }
+        }).catch(function (err) {
+            callback(err, null);
+        });
+    };
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //-----------------------------------------------------------  Method not implemented  --------------------------------------------------------------------------------------
@@ -67,102 +179,6 @@ var SonosClient = /** @class */ (function () {
     };
     SonosClient.prototype.queueNext = function (_songuri, callback) {
         throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.getDevices = function (discoveryCallback) {
-        axios_1.default.get(this.configNode.ip + '/zones', {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then(function (response) {
-            if (response.data) {
-                var devices = [];
-                for (var _i = 0, _a = response.data; _i < _a.length; _i++) {
-                    var coordinator = _a[_i];
-                    devices.push({
-                        label: coordinator.coordinator.roomName,
-                        value: coordinator.coordinator.uuid
-                    });
-                }
-                discoveryCallback(devices);
-            }
-        }).catch(function (err) {
-            console.log(err);
-        });
-    };
-    SonosClient.prototype.getFavourites = function (discoveryCallback) {
-        var urls = [this.configNode.ip, this.name];
-        var url = urls.join('/');
-        axios_1.default.get(url + '/favourites', {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then(function (response) {
-            if (response.data) {
-                var favourites = response.data;
-                discoveryCallback(favourites);
-            }
-        }).catch(function (err) {
-            console.log(err);
-        });
-    };
-    SonosClient.prototype.httpCall = function (action, property, callback) {
-        var args = [];
-        for (var _i = 3; _i < arguments.length; _i++) {
-            args[_i - 3] = arguments[_i];
-        }
-        var urls = [this.configNode.ip, this.name, action];
-        urls = urls.concat(args);
-        var url = urls.join('/');
-        axios_1.default.get(url, {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then(function (response) {
-            if (response.data) {
-                if (property) {
-                    var data = Object(response.data);
-                    if (Reflect.has(data, property)) {
-                        callback(null, Reflect.get(data, property));
-                    }
-                }
-                else {
-                    callback(null, response.data);
-                }
-            }
-        }).catch(function (err) {
-            callback(err, null);
-        });
-    };
-    SonosClient.prototype.httpCallWithoutDevice = function (action, property, callback) {
-        var args = [];
-        for (var _i = 3; _i < arguments.length; _i++) {
-            args[_i - 3] = arguments[_i];
-        }
-        var urls = [this.configNode.ip, action];
-        urls = urls.concat(args);
-        var url = urls.join('/');
-        axios_1.default.get(url, {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then(function (response) {
-            if (response.data) {
-                var data = Object(response.data);
-                if (Reflect.has(data, property)) {
-                    callback(null, Reflect.get(data, property));
-                }
-            }
-        }).catch(function (err) {
-            callback(err, null);
-        });
     };
     return SonosClient;
 }());

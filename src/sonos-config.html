@@ -1,20 +1,15 @@
 <script type="text/javascript">
-    RED.nodes.registerType('sonos-http-api-config',{
+    RED.nodes.registerType('sonos-http-api-config', {
         category: 'config',
         defaults: {
-            name: {value: "", required:true},
-            ip: { value: ""},
-            username: { value: ""},
-            password: { value: ""},
-            player: {value: ""}           
+            name: { value: "", required: true },
+            ip: { value: "" },
+            username: { value: "" },
+            password: { value: "" },
+            player: { value: "" }
         },
-        label: function() {
+        label: function () {
             return this.name;
-        },
-        
-        oneditsave: function () {
-          var node = this;
-          node.language = $("#node-input-language").val();
         }
     });
 </script>
@@ -26,15 +21,14 @@
     </div>
     <div class="form-row">
         <label for="node-config-input-ip"><i class="fa fa-tag"></i> IP Address / hostname of SONOS HTTP Api</label>
-        <input type="text" id="node-config-input-ip" placeholder="">
+        <input type="text" id="node-config-input-ip" placeholder="http://sonos-http-api:5005">
     </div>
     <div class="form-row">
-        <label for="node-config-input-username"><i class="fa fa-tag"></i> username</label>
+        <label for="node-config-input-username"><i class="fa fa-tag"></i> Username</label>
         <input type="text" id="node-config-input-username" placeholder="username">
     </div>
     <div class="form-row">
-        <label for="node-config-input-password"><i class="fa fa-tag"></i> password</label>
-        <input type="text" id="node-config-input-password" placeholder="password">
-    </div>   
-    
+        <label for="node-config-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-config-input-password" placeholder="password">
+    </div>       
 </script>

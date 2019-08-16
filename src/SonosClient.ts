@@ -90,6 +90,123 @@ export default class SonosClient {
     }
 
 
+    name?: string;
+    configNode?: ConfigNode;
+    constructor(name?: string, configNode?: any) {
+        this.name = name;
+        this.configNode = configNode;
+    }
+
+    getDevices(discoveryCallback: (arg0: any[]) => void) {
+        let options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            }
+        }
+
+        axios.get(this.configNode.ip + '/zones', options)
+            .then((response) => {
+                if (response.data) {
+                    var devices = [];
+                    for (var coordinator of response.data) {
+                        devices.push({
+                            label: coordinator.coordinator.roomName,
+                            value: coordinator.coordinator.uuid
+                        });
+                    }
+                    discoveryCallback(devices);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
+    getFavourites(discoveryCallback: (arg0: any[]) => void) {
+        let urls = [this.configNode.ip, this.name];
+        let url = urls.join('/');
+        let options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            }
+        }
+
+        axios.get(url + '/favourites', options)
+            .then((response) => {
+                if (response.data) {
+                    var favourites = response.data;
+                    discoveryCallback(favourites);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
+    httpCall<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
+        let urls = [this.configNode.ip, this.name, action];
+        urls = urls.concat(args);
+        let url = urls.join('/');
+        let options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            }
+        }
+        axios.get<T>(url, options)
+            .then((response: AxiosResponse<T>) => {
+                if (response.data) {
+                    if (property) {
+                        let data: object = Object(response.data);
+                        if (Reflect.has(data, property)) {
+                            callback(null, Reflect.get(data, property));
+                        }
+                    }
+                    else {
+                        callback(null, response.data);
+                    }
+                }
+            }).catch((err) => {
+                callback(err, null);
+            });
+    }
+
+
+    httpCallWithoutDevice<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
+        let urls = [this.configNode.ip, action];
+        urls = urls.concat(args);
+        let url = urls.join('/');
+        let options = {};
+        if (this.configNode.username) {
+            options = {
+                auth: {
+                    username: this.configNode.username,
+                    password: this.configNode.password
+                }
+            }
+        }
+
+        axios.get<T>(url, options)
+            .then((response: AxiosResponse<T>) => {
+                if (response.data) {
+                    let data: object = Object(response.data);
+                    if (Reflect.has(data, property)) {
+                        callback(null, Reflect.get(data, property));
+                    }
+                }
+            }).catch((err) => {
+                callback(err, null);
+            });
+    }
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -131,108 +248,6 @@ export default class SonosClient {
 
     queueNext(_songuri: string, callback: (err: any, result: any) => void) {
         throw new Error("Method not implemented.");
-    }
-
-    name?: string;
-    configNode?: ConfigNode;
-    constructor(name?: string, configNode?: any) {
-        this.name = name;
-        this.configNode = configNode;
-    }
-
-    getDevices(discoveryCallback: (arg0: any[]) => void) {
-        axios.get(this.configNode.ip + '/zones', {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then((response) => {
-                if (response.data) {
-                    var devices = [];
-                    for (var coordinator of response.data) {
-                        devices.push({
-                            label: coordinator.coordinator.roomName,
-                            value: coordinator.coordinator.uuid
-                        });
-                    }
-                    discoveryCallback(devices);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-    }
-
-    getFavourites(discoveryCallback: (arg0: any[]) => void) {
-        let urls = [this.configNode.ip, this.name];
-        let url = urls.join('/');
-
-        axios.get(url + '/favourites', {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then((response) => {
-                if (response.data) {
-                    var favourites = response.data;
-                    discoveryCallback(favourites);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-    }
-
-    httpCall<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
-        let urls = [this.configNode.ip, this.name, action];
-        urls = urls.concat(args);
-        let url = urls.join('/');
-
-        axios.get<T>(url, {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then((response: AxiosResponse<T>) => {
-                if (response.data) {
-                    if (property) {
-                        let data: object = Object(response.data);
-                        if (Reflect.has(data, property)) {
-                            callback(null, Reflect.get(data, property));
-                        }
-                    }
-                    else {
-                        callback(null, response.data);
-                    }
-                }
-            }).catch((err) => {
-                callback(err, null);
-            });
-    }
-
-
-    httpCallWithoutDevice<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
-        let urls = [this.configNode.ip, action];
-        urls = urls.concat(args);
-        let url = urls.join('/');
-
-        axios.get<T>(url, {
-            auth: {
-                username: this.configNode.username,
-                password: this.configNode.password
-            }
-        })
-            .then((response: AxiosResponse<T>) => {
-                if (response.data) {
-                    let data: object = Object(response.data);
-                    if (Reflect.has(data, property)) {
-                        callback(null, Reflect.get(data, property));
-                    }
-                }
-            }).catch((err) => {
-                callback(err, null);
-            });
     }
 
 }

@@ -14,21 +14,19 @@ module.exports = function status(RED) {
 		var isValid = helper.validateConfigNode(node, configNode);
 		if (!isValid)
 			return;
-
-		//clear node status
-		node.status({});
-
-		//handle input message
+	
+		node.status({});	
+			
 		node.on('input', function (msg) {
 			helper.preprocessInputMsg(node, configNode, msg, function(device) {
-				getSonosCurrentState(node, msg, device.name, configNode);
+				getSonosCurrentState(node, msg, device.player, configNode);
 			});
 		});
 	}
 
-	function getSonosCurrentState(node, msg, name, configNode:ConfigNode) 
+	function getSonosCurrentState(node, msg, player, configNode:ConfigNode) 
 	{
-		var client = new SonosClient(name, configNode);
+		var client = new SonosClient(player, configNode);
 		if (client === null || client === undefined) {
 			node.status({fill:"red", shape:"dot", text:"sonos client is null"});
 			return;
@@ -49,8 +47,6 @@ module.exports = function status(RED) {
 			node.send(msg);	
 		});
 	}
-
-	//------------------------------------------------------------------------------------------
 	
 	RED.nodes.registerType('sonos-http-api-status', Node);
 }

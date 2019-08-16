@@ -24,5 +24,17 @@ module.exports = function (RED) {
         var client = new SonosClient_1.default(null, config2);
         client.getDevices(discoveryCallback);
     }
+    RED.httpAdmin.get("/sonosFavourites", function (req, res) {
+        RED.log.debug("GET /sonosFavourites");
+        discoverFavourites(function (Favourites) {
+            RED.log.debug("GET /sonosFavourites: " + Favourites.length + " found");
+            res.json(Favourites);
+        });
+    });
+    function discoverFavourites(discoveryCallback) {
+        RED.log.debug("Start Favourites discovery");
+        var client = new SonosClient_1.default(null, config2);
+        client.getFavourites(discoveryCallback);
+    }
     RED.nodes.registerType("sonos-http-api-config", SonosPlayerNode);
 };

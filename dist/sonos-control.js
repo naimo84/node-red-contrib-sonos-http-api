@@ -18,24 +18,20 @@ module.exports = function (RED) {
         var isValid = helper.validateConfigNode(node, configNode);
         if (!isValid)
             return;
-        //clear node status
         node.status({});
-        //Hmmm?
         node.mode = config.mode;
         node.track = config.track;
         node.volume = config.volume;
         if (node.volume === "empty")
             node.volume = "";
         node.volume_value = config.volume_value;
-        //handle input message
         node.on('input', function (msg) {
             helper.preprocessInputMsg(node, configNode, msg, function (device) {
-                handleInputMsg(node, configNode, msg, device.name);
+                handleInputMsg(node, configNode, msg, device.player);
             });
         });
     }
-    //------------------------------------------------------------------------------------
-    function handleInputMsg(node, configNode, msg, name) {
+    function handleInputMsg(node, configNode, msg, player) {
         var payload = "";
         if (msg.payload !== null && msg.payload !== undefined && msg.payload)
             payload = "" + msg.payload;
@@ -47,15 +43,14 @@ module.exports = function (RED) {
         if (topic.indexOf('set')) {
             var topics = topic.split('/');
             if (topics && topics.length >= 4) {
-                name = topics[2];
+                player = topics[2];
             }
         }
-        var client = new SonosClient_1.default(name, configNode);
+        var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
             return;
         }
-        //Handle simple string payload format, rather than specific JSON format previously
         if (payload === "play" || payload === "pause" || payload === "stop" || payload === "toggle" || payload === "playpause") {
             newPayload = { mode: payload };
         }
@@ -77,16 +72,14 @@ module.exports = function (RED) {
         else if (payload === "flush" || payload === "clear") {
             newPayload = { command: "flush" };
         }
-        //Grouping
         else if (payload === "join" || payload === "join_group" || payload === "joingroup" || payload === "join group") {
             newPayload = { command: "join_group" };
-            handleGroupingCommand(node, configNode, msg, client, newPayload);
+            handleGroupingCommand(node, msg, client, newPayload);
         }
         else if (payload === "leave" || payload === "leave_group" || payload === "leavegroup" || payload === "leave group") {
             newPayload = { command: "leave_group" };
-            handleGroupingCommand(node, configNode, msg, client, newPayload);
+            handleGroupingCommand(node, msg, client, newPayload);
         }
-        //Use payload values only if config via dialog is empty
         var _mode = newPayload.mode;
         if (node.mode)
             _mode = node.mode;
@@ -99,22 +92,19 @@ module.exports = function (RED) {
         var _command = newPayload.command;
         if (node.command)
             _command = node.command;
-        // simple control commands
         if (_mode)
-            handleCommand(node, configNode, msg, client, _mode);
+            handleCommand(node, msg, client, _mode);
         if (_track)
-            handleCommand(node, configNode, msg, client, _track);
+            handleCommand(node, msg, client, _track);
         if (_volume)
-            handleCommand(node, configNode, msg, client, _volume);
+            handleCommand(node, msg, client, _volume);
         if (_command)
-            handleCommand(node, configNode, msg, client, _command);
-        // commands with parameters
+            handleCommand(node, msg, client, _command);
         if (newPayload.volume || node.volume)
-            handleVolumeCommand(node, configNode, msg, client, payload);
+            handleVolumeCommand(node, msg, client, payload);
         node.send(msg);
     }
-    //------------------------------------------------------------------------------------
-    function handleCommand(node, configNode, msg, client, cmd) {
+    function handleCommand(node, msg, client, cmd) {
         switch (cmd) {
             case "pause":
                 client.pause(function (err, result) {
@@ -128,7 +118,6 @@ module.exports = function (RED) {
                 break;
             case "toggle":
             case "playpause":
-                //Retrieve current playing state
                 client.getCurrentState(function (err, state) {
                     if (err) {
                         node.error(JSON.stringify(err));
@@ -139,7 +128,6 @@ module.exports = function (RED) {
                         node.status({ fill: "red", shape: "dot", text: "invalid current state retrieved" });
                         return;
                     }
-                    //Toggle playing state
                     if (state.playerState === "playing") {
                         client.pause(function (err, result) {
                             helper.handleSonosApiRequest(node, err, result, msg, "paused", null);
@@ -185,7 +173,7 @@ module.exports = function (RED) {
                 break;
         }
     }
-    function handleVolumeCommand(node, configNode, msg, client, payload) {
+    function handleVolumeCommand(node, msg, client, payload) {
         var _volumeFunction;
         var _volumeValue;
         //Use payload values as default
@@ -277,7 +265,7 @@ module.exports = function (RED) {
                 break;
         }
     }
-    function handleGroupingCommand(node, configNode, msg, client, payload) {
+    function handleGroupingCommand(node, msg, client, payload) {
         node.status({ fill: "green", shape: "dot", text: payload.command });
         if (payload.command === "leave_group") {
             client.leaveGroup(function (err, result) {
@@ -285,7 +273,6 @@ module.exports = function (RED) {
             });
         }
         if (payload.command === "join_group") {
-            //validation
             var deviceName = msg.topic;
             if (!deviceName) {
                 node.status({ fill: "red", shape: "dot", text: "msg.topic is not defined" });

@@ -21,74 +21,73 @@ module.exports = function (RED) {
         node.status({});
         node.on('input', function (msg) {
             helper.preprocessInputMsg(node, configNode, msg, function (device) {
-                handleInputMsg(node, configNode, msg, device.name);
+                handleInputMsg(node, configNode, msg, device.player);
             });
         });
     }
-    //------------------------------------------------------------------------------------
-    function handleInputMsg(node, configNode, msg, name) {
+    function handleInputMsg(node, configNode, msg, player) {
         var payload = "";
         if (msg.payload !== null && msg.payload !== undefined && msg.payload)
             payload = "" + msg.payload;
         payload = payload.toLowerCase();
-        var newPayload = new PayLoad();
         var topic = "";
         if (msg.topic !== null && msg.topic !== undefined && msg.topic)
             topic = msg.topic;
         if (topic.indexOf('set')) {
             var topics = topic.split('/');
             if (topics && topics.length >= 4) {
-                name = topics[2];
+                player = topics[2];
             }
         }
-        var client = new SonosClient_1.default(name, configNode);
+        var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
             return;
         }
         else if (payload.indexOf("preset-") >= 0) {
-            newPayload = { command: "preset", preset: payload.split("-")[1] };
-            handleGroupingCommand(node, configNode, msg, client, newPayload);
-        }
-        else if (payload.indexOf("clipall-") >= 0) {
-            newPayload = { command: "clipall", clip: payload.split("-")[1] };
-            handleGroupingCommand(node, configNode, msg, client, newPayload);
-        }
-        node.send(msg);
-    }
-    //------------------------------------------------------------------------------------
-    function handleGroupingCommand(node, configNode, msg, client, payload) {
-        node.status({ fill: "green", shape: "dot", text: payload.command });
-        if (payload.command === "preset") {
-            //validation
-            var preset = payload.preset;
+            var preset = payload.split("-")[1];
+            node.status({ fill: "green", shape: "dot", text: preset });
             if (!preset) {
                 node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
                 return;
             }
             client.preset(preset, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, "joined group with " + preset, null);
+                helper.handleSonosApiRequest(node, err, result, msg, "preset played " + preset, null);
             });
         }
-        if (payload.command === "clipall") {
-            //validation
+        else if (payload.indexOf("clipall-") >= 0) {
+            var clip = payload.split("-")[1];
             if (node.context().get('clip') === true) {
-                node.status({ fill: "red", shape: "dot", text: "already clippall" });
+                node.status({ fill: "red", shape: "dot", text: "already clipall" });
                 return;
             }
-            var clip = payload.clip;
             if (!clip) {
-                node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
+                node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
                 return;
             }
             node.context().set('clip', true);
             client.clipall(clip, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, "joined clip with " + clip, null);
+                helper.handleSonosApiRequest(node, err, result, msg, "clip " + clip, null);
             });
             setTimeout(function () {
                 node.context().set('clip', false);
             }, 10 * 1000);
         }
+        else if (node.notify !== undefined || node.notify !== null) {
+            var _songuri = node.notify;
+            if (node.context().get('clip') === true) {
+                node.status({ fill: "red", shape: "dot", text: "already clip" });
+                return;
+            }
+            node.context().set('clip', true);
+            client.clip(_songuri, 30, function (err, result) {
+                helper.handleSonosApiRequest(node, err, result, msg, null, null);
+            });
+            setTimeout(function () {
+                node.context().set('clip', false);
+            }, 10 * 1000);
+        }
+        node.send(msg);
     }
     RED.nodes.registerType('sonos-http-api-notify', Node);
 };

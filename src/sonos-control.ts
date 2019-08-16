@@ -1,6 +1,7 @@
 import SonosHelper from "./SonosHelper";
 import SonosClient from './SonosClient';
 import { ConfigNode } from './SonosClient';
+import { Node } from "node-red";
 
 export class PayLoad {
 	mode?: string;
@@ -18,23 +19,29 @@ interface Message {
 	payload?: string;
 }
 
+interface SonosNode extends Node {
+	mode?: string;
+	track?: string;
+	volume?: string;
+	command?: string;
+	volume_value?: number;
+}
+
 module.exports = function (RED) {
 	'use strict';
 	var helper = new SonosHelper();
 	function Node(config) {
 
 		RED.nodes.createNode(this, config);
-		var node = this;
+		var node: SonosNode = this;
 		var configNode = RED.nodes.getNode(config.confignode);
 
 		var isValid = helper.validateConfigNode(node, configNode);
 		if (!isValid)
 			return;
 
-		//clear node status
 		node.status({});
 
-		//Hmmm?
 		node.mode = config.mode;
 		node.track = config.track;
 		node.volume = config.volume;
@@ -42,17 +49,14 @@ module.exports = function (RED) {
 			node.volume = "";
 		node.volume_value = config.volume_value;
 
-		//handle input message
-		node.on('input', function (msg: Message) {
-			helper.preprocessInputMsg(node, configNode, msg, function (device) {
-				handleInputMsg(node, configNode, msg, device.name);
+		node.on('input', (msg: Message) => {
+			helper.preprocessInputMsg(node, configNode, msg, (device) => {
+				handleInputMsg(node, configNode, msg, device.player);
 			});
 		});
 	}
-	
-	//------------------------------------------------------------------------------------
 
-	function handleInputMsg(node, configNode:ConfigNode, msg: Message, name) {
+	function handleInputMsg(node: SonosNode, configNode: ConfigNode, msg: Message, player: string) {
 		var payload = "";
 		if (msg.payload !== null && msg.payload !== undefined && msg.payload)
 			payload = "" + msg.payload;
@@ -66,17 +70,16 @@ module.exports = function (RED) {
 		if (topic.indexOf('set')) {
 			var topics = topic.split('/');
 			if (topics && topics.length >= 4) {
-				name = topics[2];
+				player = topics[2];
 			}
 		}
 
-		var client = new SonosClient(name, configNode);
+		var client = new SonosClient(player, configNode);
 		if (client === null || client === undefined) {
 			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
 			return;
 		}
 
-		//Handle simple string payload format, rather than specific JSON format previously
 		if (payload === "play" || payload === "pause" || payload === "stop" || payload === "toggle" || payload === "playpause") {
 			newPayload = { mode: payload };
 		}
@@ -98,18 +101,15 @@ module.exports = function (RED) {
 		else if (payload === "flush" || payload === "clear") {
 			newPayload = { command: "flush" };
 		}
-
-		//Grouping
 		else if (payload === "join" || payload === "join_group" || payload === "joingroup" || payload === "join group") {
 			newPayload = { command: "join_group" };
-			handleGroupingCommand(node, configNode, msg, client, newPayload);
+			handleGroupingCommand(node, msg, client, newPayload);
 		}
 		else if (payload === "leave" || payload === "leave_group" || payload === "leavegroup" || payload === "leave group") {
 			newPayload = { command: "leave_group" };
-			handleGroupingCommand(node, configNode, msg, client, newPayload);
+			handleGroupingCommand(node, msg, client, newPayload);
 		}
 
-		//Use payload values only if config via dialog is empty
 		var _mode = newPayload.mode;
 		if (node.mode)
 			_mode = node.mode;
@@ -123,26 +123,22 @@ module.exports = function (RED) {
 		if (node.command)
 			_command = node.command;
 
-		// simple control commands
 		if (_mode)
-			handleCommand(node, configNode, msg, client, _mode);
+			handleCommand(node, msg, client, _mode);
 		if (_track)
-			handleCommand(node, configNode, msg, client, _track);
+			handleCommand(node, msg, client, _track);
 		if (_volume)
-			handleCommand(node, configNode, msg, client, _volume);
+			handleCommand(node, msg, client, _volume);
 		if (_command)
-			handleCommand(node, configNode, msg, client, _command);
+			handleCommand(node, msg, client, _command);
 
-		// commands with parameters
 		if (newPayload.volume || node.volume)
-			handleVolumeCommand(node, configNode, msg, client, payload);
+			handleVolumeCommand(node, msg, client, payload);
 
 		node.send(msg);
 	}
 
-	//------------------------------------------------------------------------------------
-
-	function handleCommand(node, configNode:ConfigNode, msg, client: SonosClient, cmd) {
+	function handleCommand(node: SonosNode, msg, client: SonosClient, cmd: string) {
 		switch (cmd) {
 			case "pause":
 				client.pause(function (err, result) {
@@ -156,7 +152,6 @@ module.exports = function (RED) {
 				break;
 			case "toggle":
 			case "playpause":
-				//Retrieve current playing state
 				client.getCurrentState(function (err, state) {
 					if (err) {
 						node.error(JSON.stringify(err));
@@ -168,7 +163,6 @@ module.exports = function (RED) {
 						return;
 					}
 
-					//Toggle playing state
 					if (state.playerState === "playing") {
 						client.pause(function (err, result) {
 							helper.handleSonosApiRequest(node, err, result, msg, "paused", null);
@@ -218,7 +212,7 @@ module.exports = function (RED) {
 		}
 	}
 
-	function handleVolumeCommand(node, configNode, msg, client: SonosClient, payload) {
+	function handleVolumeCommand(node: SonosNode, msg, client: SonosClient, payload) {
 		var _volumeFunction;
 		var _volumeValue;
 
@@ -317,7 +311,7 @@ module.exports = function (RED) {
 		}
 	}
 
-	function handleGroupingCommand(node, configNode, msg, client: SonosClient, payload: PayLoad) {
+	function handleGroupingCommand(node: SonosNode, msg, client: SonosClient, payload: PayLoad) {
 		node.status({ fill: "green", shape: "dot", text: payload.command });
 		if (payload.command === "leave_group") {
 			client.leaveGroup(function (err, result) {
@@ -326,7 +320,6 @@ module.exports = function (RED) {
 		}
 
 		if (payload.command === "join_group") {
-			//validation
 			var deviceName = msg.topic;
 			if (!deviceName) {
 				node.status({ fill: "red", shape: "dot", text: "msg.topic is not defined" });

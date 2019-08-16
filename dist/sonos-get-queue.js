@@ -12,18 +12,15 @@ module.exports = function (RED) {
         var isValid = helper.validateConfigNode(node, configNode);
         if (!isValid)
             return;
-        //clear node status
         node.status({});
-        //handle input message
         node.on('input', function (msg) {
             helper.preprocessInputMsg(node, configNode, msg, function (device) {
-                getSonosCurrentQueue(node, msg, device.name, configNode);
+                getSonosCurrentQueue(node, msg, device.player, configNode);
             });
         });
     }
-    //------------------------------------------------------------------------------------------
-    function getSonosCurrentQueue(node, msg, name, configNode) {
-        var client = new SonosClient_1.default(name, configNode);
+    function getSonosCurrentQueue(node, msg, player, configNode) {
+        var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
             return;
@@ -47,17 +44,7 @@ module.exports = function (RED) {
                 return;
             }
             var tracksArray = queueObj.items;
-            //massage albumArtURL
-            // tracksArray.forEach(function(trackObj) {
-            // 	if (trackObj.albumArtURL !== undefined && trackObj.albumArtURL !== null) {
-            // 		var port = 1400;
-            // 		trackObj.albumArtURI = trackObj.albumArtURL;
-            // 		trackObj.albumArtURL = "http://" + name + ":" + port + trackObj.albumArtURI;
-            // 	}
-            // });
-            //Output data
             msg.payload = tracksArray;
-            //Send output
             node.send(msg);
         });
     }

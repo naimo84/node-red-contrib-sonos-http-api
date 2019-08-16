@@ -1,56 +1,52 @@
-<!-- Sonos Get CurrentTrack Node -->
-<!-- just returns the currently played track from a specific SONOS player -->
-
-<!-- Registering Sonos CurrentTrack Node -->
 <script type="text/javascript">
-	RED.nodes.registerType('sonos-http-api-status',{
+    RED.nodes.registerType('sonos-http-api-status', {
         category: 'Sonos',
-        defaults: {    
-            confignode: {value:"", type:"sonos-http-api-config"},
-            name: {value:""}
+        defaults: {
+            confignode: { value: "", type: "sonos-http-api-config" },
+            name: { value: "" },
+            player: { value: "" }
         },
-        inputs:1,
-        outputs:1,
-        icon: "better_sonos.png",       // saved in  icons/myicon.png
-        color: "#FFFFFF", 
-        label: function() {
+        inputs: 1,
+        outputs: 1,
+        icon: "sonos.png",    
+        color: "#FFFFFF",
+        label: function () {
             return this.name || "Sonos Status";
         },
         paletteLabel: "Sonos Status",
         oneditprepare: function () {
 
-try {
-  $("#node-input-player").autocomplete( "destroy" );
-} catch(err) { }
+            try {
+                $("#node-input-player").autocomplete("destroy");
+            } catch (err) { }
 
-$("#node-config-lookup-player").click(function() {
-    $("#node-config-lookup-player-icon").removeClass('fa-search');
-    $("#node-config-lookup-player-icon").addClass('spinner');
-    $("#node-config-lookup-player").addClass('disabled');
-    
-    $.getJSON('sonosSearch',function(data) {
-        $("#node-config-lookup-player-icon").addClass('fa-search');
-        $("#node-config-lookup-player-icon").removeClass('spinner');
-        $("#node-config-lookup-player").removeClass('disabled');
-        var dataArray = [];
-        $.each(data, function(i, element){
-            dataArray.push(element);
-        });
-        $("#node-input-player").autocomplete({
-            source:dataArray,
-            minLength:0,
-            close: function( event, ui ) {
-                $("#node-input-player").autocomplete( "destroy" );
-            }
-        }).autocomplete("search","");
-    });
-});
+            $("#node-config-lookup-player").click(function () {
+                $("#node-config-lookup-player-icon").removeClass('fa-search');
+                $("#node-config-lookup-player-icon").addClass('spinner');
+                $("#node-config-lookup-player").addClass('disabled');
 
-},
+                $.getJSON('sonosSearch', function (data) {
+                    $("#node-config-lookup-player-icon").addClass('fa-search');
+                    $("#node-config-lookup-player-icon").removeClass('spinner');
+                    $("#node-config-lookup-player").removeClass('disabled');
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        dataArray.push(element);
+                    });
+                    $("#node-input-player").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-player").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
     });
 </script>
 
-<!-- Setting design and inputs for node -->
 <script type="text/x-red" data-template-name="sonos-http-api-status">
 	<div class="form-row">
         <label for="node-input-confignode"> Sonos Config Node</label>
@@ -70,7 +66,6 @@ $("#node-config-lookup-player").click(function() {
 </script>
 
 
-<!-- Simple Help Text -->
 <script type="text/x-red" data-help-name="sonos-http-api-status">
     <p>
         A node to retrieve current track info, volume, mute, playing state, etc. upon triggered

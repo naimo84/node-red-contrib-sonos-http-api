@@ -3,7 +3,8 @@ var ts = require("gulp-typescript");
 var tsProject = ts.createProject("tsconfig.json");
 
 var paths = {
-    pages: ['src/*.html']
+    pages: ['src/*.html'],
+    assets: ['src/icons/*.*']
 };
 
 gulp.task("copy-html", function () {
@@ -11,10 +12,17 @@ gulp.task("copy-html", function () {
         .pipe(gulp.dest("dist"));
 });
 
+gulp.task("copy-assets", function () {
+    return gulp.src(paths.assets)
+        .pipe(gulp.dest("dist/icons"));
+});
+
+
 function bundle() {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest("dist"));
 }
 
-gulp.task("default", gulp.series(gulp.parallel('copy-html'), bundle));
+
+gulp.task("default", gulp.series(gulp.parallel('copy-html'),gulp.parallel('copy-assets'), bundle));
