@@ -17,9 +17,9 @@
         "volume": "",
         "clipall_value": "",
         "volume_value": "",
-        "player": "",
+        "player": "Livingroom",
         "x": 420,
-        "y": 100,
+        "y": 60,
         "wires": []
     },
     {
@@ -27,7 +27,7 @@
         "type": "inject",
         "z": "ff776b13.2b49d8",
         "name": "mqtt-play",
-        "topic": "sonos/set/livingroom/control",
+        "topic": "sonos/set/Livingroom/control",
         "payload": "play",
         "payloadType": "str",
         "repeat": "",
@@ -38,7 +38,7 @@
         "y": 120,
         "wires": [
             [
-                "ec1c3b6f.9a2008"
+                "ba7599fc.f80fb8"
             ]
         ]
     },
@@ -92,7 +92,7 @@
         "clipall": "",
         "player": "",
         "x": 410,
-        "y": 220,
+        "y": 340,
         "wires": []
     },
     {
@@ -100,15 +100,15 @@
         "type": "inject",
         "z": "ff776b13.2b49d8",
         "name": "mqtt-notify",
-        "topic": "sonos/set/livingroom/notify",
-        "payload": "{\"command\":\"clip\" , \"uri\": \"close_window.mp3\"}",
+        "topic": "sonos/set/Livingroom/notify",
+        "payload": "{\"command\":\"clip\" , \"uri\": \"window.mp3\"}",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 180,
-        "y": 220,
+        "x": 160,
+        "y": 340,
         "wires": [
             [
                 "bfc984d0.a6fe38"
@@ -127,8 +127,8 @@
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "x": 180,
-        "y": 280,
+        "x": 160,
+        "y": 400,
         "wires": [
             [
                 "e7c9835a.8c452"
@@ -140,7 +140,7 @@
         "type": "inject",
         "z": "ff776b13.2b49d8",
         "name": "mqtt-pause",
-        "topic": "sonos/set/livingroom/control",
+        "topic": "sonos/set/Livingroom/control",
         "payload": "pause",
         "payloadType": "str",
         "repeat": "",
@@ -151,7 +151,7 @@
         "y": 160,
         "wires": [
             [
-                "ec1c3b6f.9a2008"
+                "ba7599fc.f80fb8"
             ]
         ]
     },
@@ -161,12 +161,236 @@
         "z": "ff776b13.2b49d8",
         "confignode": "8c689c5f.117",
         "preset": "",
-        "clip": "open_window.mp3",
+        "clip": "window_closed.mp3",
         "clipall": "",
-        "player": "livingroom",
+        "player": "Livingroom",
         "x": 410,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "cbae7568.d61b98",
+        "type": "sonos-http-api-control",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "mode": "",
+        "track": "next",
+        "volume": "",
+        "clipall_value": "",
+        "volume_value": "",
+        "player": "Livingroom",
+        "x": 420,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "2ba705b1.c8942a",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "node-next",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 220,
+        "wires": [
+            [
+                "cbae7568.d61b98"
+            ]
+        ]
+    },
+    {
+        "id": "8840ded.850b72",
+        "type": "sonos-http-api-control",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "mode": "",
+        "track": "previous",
+        "volume": "",
+        "clipall_value": "",
+        "volume_value": "",
+        "player": "Livingroom",
+        "x": 420,
         "y": 280,
         "wires": []
+    },
+    {
+        "id": "dba7f5d9.af6aa8",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "node-prev",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 280,
+        "wires": [
+            [
+                "8840ded.850b72"
+            ]
+        ]
+    },
+    {
+        "id": "ba7599fc.f80fb8",
+        "type": "sonos-http-api-control",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "mode": "",
+        "track": "",
+        "volume": "",
+        "clipall_value": "",
+        "volume_value": "",
+        "player": "Livingroom",
+        "x": 420,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "742456ea.3bb8f8",
+        "type": "sonos-http-api-queue",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "songuri": "",
+        "position": "favourite",
+        "favourite": "",
+        "positioninqueue": "",
+        "name": "",
+        "player": "Livingroom",
+        "x": 430,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f7871456.f32c58",
+        "type": "sonos-http-api-get-queue",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "player": "Livingroom",
+        "x": 360,
+        "y": 520,
+        "wires": [
+            [
+                "38999db5.da88e2"
+            ]
+        ]
+    },
+    {
+        "id": "cbef9448.9e4d08",
+        "type": "sonos-http-api-status",
+        "z": "ff776b13.2b49d8",
+        "confignode": "8c689c5f.117",
+        "name": "",
+        "player": "Livingroom",
+        "x": 350,
+        "y": 580,
+        "wires": [
+            [
+                "85132d73.7253a"
+            ]
+        ]
+    },
+    {
+        "id": "85132d73.7253a",
+        "type": "debug",
+        "z": "ff776b13.2b49d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 530,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "42e6f253.1d672c",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "get Status",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 580,
+        "wires": [
+            [
+                "cbef9448.9e4d08"
+            ]
+        ]
+    },
+    {
+        "id": "38999db5.da88e2",
+        "type": "debug",
+        "z": "ff776b13.2b49d8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 530,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ea60a475.ebe258",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "get Queue",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 160,
+        "y": 520,
+        "wires": [
+            [
+                "f7871456.f32c58"
+            ]
+        ]
+    },
+    {
+        "id": "53e30dbd.b2eb84",
+        "type": "inject",
+        "z": "ff776b13.2b49d8",
+        "name": "",
+        "topic": "",
+        "payload": "{\"favourite\":\"Capital London\"}",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 150,
+        "y": 460,
+        "wires": [
+            [
+                "742456ea.3bb8f8"
+            ]
+        ]
     },
     {
         "id": "8c689c5f.117",

@@ -36,6 +36,29 @@ var SonosClient = /** @class */ (function () {
     SonosClient.prototype.getCurrentState = function (stateCallback) {
         this.httpCall('state', null, stateCallback);
     };
+    SonosClient.prototype.setVolume = function (volume, callback) {
+        this.httpCall('volume', 'status', callback, volume);
+    };
+    SonosClient.prototype.next = function (callback) {
+        this.httpCall('next', 'status', callback);
+    };
+    SonosClient.prototype.previous = function (callback) {
+        this.httpCall('previous', 'status', callback);
+    };
+    SonosClient.prototype.setMuted = function (muted, callback) {
+        if (muted) {
+            this.httpCall('mute', 'status', callback);
+        }
+        else {
+            this.httpCall('unmute', 'status', callback);
+        }
+    };
+    SonosClient.prototype.flush = function (callback) {
+        this.httpCall('clearqueue', 'status', callback);
+    };
+    SonosClient.prototype.getQueue = function (callback) {
+        this.httpCall('queue', null, callback);
+    };
     SonosClient.prototype.getDevices = function (discoveryCallback) {
         var options = {};
         if (this.configNode.username) {
@@ -148,38 +171,6 @@ var SonosClient = /** @class */ (function () {
         }).catch(function (err) {
             callback(err, null);
         });
-    };
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //-----------------------------------------------------------  Method not implemented  --------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    SonosClient.prototype.setVolume = function (volume, callback) {
-        this.httpCall('volume', 'status', callback, volume);
-    };
-    SonosClient.prototype.flush = function (callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.next = function (callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.setMuted = function (_songuri, callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.previous = function (callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.getQueue = function (callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.queue = function (_songuri, set_position, callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.playTuneinRadio = function (_songuri, _name, callback) {
-        throw new Error("Method not implemented.");
-    };
-    SonosClient.prototype.queueNext = function (_songuri, callback) {
-        throw new Error("Method not implemented.");
     };
     return SonosClient;
 }());

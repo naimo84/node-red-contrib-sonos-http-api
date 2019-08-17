@@ -40,12 +40,11 @@ module.exports = function (RED) {
                 }
                 return;
             }
-            if (queueObj === null || queueObj === undefined || queueObj.items === undefined || queueObj.items === null) {
+            if (queueObj === null || queueObj === undefined) {
                 node.status({ fill: "red", shape: "dot", text: "invalid current queue retrieved" });
                 return;
             }
-            var tracksArray = queueObj.items;
-            msg.payload = tracksArray;
+            msg.payload = queueObj;
             node.send(msg);
         });
     }

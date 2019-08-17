@@ -60,9 +60,9 @@ module.exports = function (RED) {
 			_songuri = payload.songuri;
 
 		if (node.position === "next" || payload.position === "next") {
-			client.queueNext(_songuri, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, null, null);
-			});
+			// client.queueNext(_songuri, (err, result) => {
+			// 	helper.handleSonosApiRequest(node, err, result, msg, null, null);
+			// });
 		}
 		else if (node.position === "directplay" || payload.position === "directplay") {
 			client.play(_songuri, (err, result) => {
@@ -78,9 +78,9 @@ module.exports = function (RED) {
 			});
 		}
 		else if (node.position === "tuneinradio" || payload.position === "tuneinradio") {
-			client.playTuneinRadio(_songuri, _name, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, null, null);
-			});
+			// client.playTuneinRadio(_songuri, _name, (err, result) => {
+			// 	helper.handleSonosApiRequest(node, err, result, msg, null, null);
+			// });
 		}
 		else {
 			var set_position = 0;
@@ -92,9 +92,9 @@ module.exports = function (RED) {
 				}
 			}
 
-			client.queue(_songuri, set_position, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, null, null);
-			});
+			// client.queue(_songuri, set_position, (err, result) => {
+			// 	helper.handleSonosApiRequest(node, err, result, msg, null, null);
+			// });
 		}
 	}
 

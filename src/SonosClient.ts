@@ -89,6 +89,46 @@ export default class SonosClient {
         this.httpCall<SonosState>('state', null, stateCallback);
     }
 
+    setVolume(volume: number, callback: (err: any, result: any) => void) {
+        this.httpCall<SonosState>('volume', 'status', callback, volume);
+    }
+
+    next(callback: (err: any, result: any) => void) {
+        this.httpCall<SonosState>('next', 'status', callback);
+    }
+    previous(callback: (err: any, result: any) => void) {
+        this.httpCall<SonosState>('previous', 'status', callback);
+    }
+
+    setMuted(muted: boolean, callback: (err: any, result: any) => void) {
+        if (muted) {
+            this.httpCall<SonosState>('mute', 'status', callback);
+        }
+        else {
+            this.httpCall<SonosState>('unmute', 'status', callback);
+        }
+    }
+
+    flush(callback: (err: any, result: any) => void) {
+        this.httpCall<SonosState>('clearqueue', 'status', callback);
+    }
+
+    getQueue(callback: (err: any, queueObj: any) => void) {
+        this.httpCall<SonosState>('queue', null, callback);
+    }
+
+    // queue(_songuri: string, set_position: number, callback: (err: any, result: any) => void) {
+    //     this.httpCall<SonosState>('clearqueue', 'status', callback);
+    // }
+
+    // queueNext(_songuri: string, callback: (err: any, result: any) => void) {
+    //     this.httpCall<SonosState>('clearqueue', 'status', callback);
+    // }
+
+    // playTuneinRadio(_songuri: string, _name: any, callback: (err: any, result: any) => void) {
+    //     throw new Error("Method not implemented.");
+    // }
+
 
     name?: string;
     configNode?: ConfigNode;
@@ -151,7 +191,7 @@ export default class SonosClient {
 
     httpCall<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
         let urls = [this.configNode.ip, this.name, action];
-        
+
         urls = urls.concat(args);
         let url = urls.join('/');
         console.log(url);
@@ -210,47 +250,6 @@ export default class SonosClient {
             });
     }
 
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //-----------------------------------------------------------  Method not implemented  --------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    setVolume(volume: number, callback: (err: any, result: any) => void) {
-        this.httpCall<SonosState>('volume', 'status', callback, volume);
-    }
-
-    flush(callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    next(callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    setMuted(_songuri: boolean, callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    previous(callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    getQueue(callback: (err: any, queueObj: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    queue(_songuri: string, set_position: number, callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    playTuneinRadio(_songuri: string, _name: any, callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
-
-    queueNext(_songuri: string, callback: (err: any, result: any) => void) {
-        throw new Error("Method not implemented.");
-    }
 
 }
 
