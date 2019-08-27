@@ -55,12 +55,6 @@
                 $('.form-row.' + value).show()
             });
 
-
-
-            try {
-                $("#node-config-input-serialnum").autocomplete("destroy");
-            } catch (err) { }
-
             $("#node-input-favourite").click(function () {
                 $("#node-input-favourite").addClass('disabled');
                 $.getJSON('sonosFavourites', function (data) {

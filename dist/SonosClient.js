@@ -87,25 +87,30 @@ var SonosClient = /** @class */ (function () {
         });
     };
     SonosClient.prototype.getFavourites = function (discoveryCallback) {
-        var urls = [this.configNode.ip, this.name];
-        var url = urls.join('/');
-        var options = {};
-        if (this.configNode.username) {
-            options = {
-                auth: {
-                    username: this.configNode.username,
-                    password: this.configNode.password
+        var _this = this;
+        this.getDevices(function (devices) {
+            if (devices) {
+                var urls = [_this.configNode.ip, devices[0].value];
+                var url = urls.join('/');
+                var options = {};
+                if (_this.configNode.username) {
+                    options = {
+                        auth: {
+                            username: _this.configNode.username,
+                            password: _this.configNode.password
+                        }
+                    };
                 }
-            };
-        }
-        axios_1.default.get(url + '/favourites', options)
-            .then(function (response) {
-            if (response.data) {
-                var favourites = response.data;
-                discoveryCallback(favourites);
+                axios_1.default.get(url + '/favourites', options)
+                    .then(function (response) {
+                    if (response.data) {
+                        var favourites = response.data;
+                        discoveryCallback(favourites);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
             }
-        }).catch(function (err) {
-            console.log(err);
         });
     };
     SonosClient.prototype.httpCall = function (action, property, callback) {

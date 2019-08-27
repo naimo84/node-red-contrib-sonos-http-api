@@ -166,27 +166,31 @@ export default class SonosClient {
     }
 
     getFavourites(discoveryCallback: (arg0: any[]) => void) {
-        let urls = [this.configNode.ip, this.name];
-        let url = urls.join('/');
-        let options = {};
-        if (this.configNode.username) {
-            options = {
-                auth: {
-                    username: this.configNode.username,
-                    password: this.configNode.password
+        this.getDevices((devices) => {
+            if (devices) {
+                let urls = [this.configNode.ip, devices[0].value];
+                let url = urls.join('/');
+                let options = {};
+                if (this.configNode.username) {
+                    options = {
+                        auth: {
+                            username: this.configNode.username,
+                            password: this.configNode.password
+                        }
+                    }
                 }
-            }
-        }
 
-        axios.get(url + '/favourites', options)
-            .then((response) => {
-                if (response.data) {
-                    var favourites = response.data;
-                    discoveryCallback(favourites);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
+                axios.get(url + '/favourites', options)
+                    .then((response) => {
+                        if (response.data) {
+                            var favourites = response.data;
+                            discoveryCallback(favourites);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+            }
+        });
     }
 
     httpCall<T>(action: string, property: string, callback: (err: any, state: any) => void, ...args: any[]) {
