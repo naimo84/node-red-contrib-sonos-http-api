@@ -4,6 +4,10 @@
 
 This Node RED module connects Sonos HTTP Api with Node-RED.
 
+The big advantage of sonos-http-api is the fact, that Node RED and the sonos players musst not be int the same subnet.
+
+![play_notify](examples/advantage.png)
+
 > Node-RED is a tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
 If you like it, please consider:
