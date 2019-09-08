@@ -63,7 +63,7 @@ module.exports = function (RED) {
         }
         else if (node.clipall || payload.clipall) {
             _command = "clipall";
-            _songuri = payload.clip ? payload.clipall : node.clipall;
+            _songuri = payload.clipall ? payload.clipall : node.clipall;
         }
         else if (payload.command) {
             _command = payload.command;
@@ -90,7 +90,7 @@ module.exports = function (RED) {
                 return;
             }
             if (!_songuri) {
-                node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
+                node.status({ fill: "red", shape: "dot", text: "msg.clipall is not defined" });
                 return;
             }
             node.context().set('clip', true);
@@ -104,6 +104,10 @@ module.exports = function (RED) {
         else if (_command === "clip") {
             if (node.context().get('clip') === true) {
                 node.status({ fill: "red", shape: "dot", text: "already clip" });
+                return;
+            }
+            if (!_songuri) {
+                node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
                 return;
             }
             node.context().set('clip', true);

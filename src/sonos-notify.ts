@@ -77,7 +77,7 @@ module.exports = function (RED) {
 			_songuri = payload.clip ? payload.clip : node.clip;
 		} else if (node.clipall || payload.clipall) {
 			_command = "clipall";
-			_songuri = payload.clip ? payload.clipall : node.clipall;
+			_songuri = payload.clipall ? payload.clipall : node.clipall;
 		} else if (payload.command) {
 			_command = payload.command;
 			_songuri = payload.uri;
@@ -107,7 +107,7 @@ module.exports = function (RED) {
 				return;
 			}
 			if (!_songuri) {
-				node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
+				node.status({ fill: "red", shape: "dot", text: "msg.clipall is not defined" });
 				return;
 			}
 			node.context().set('clip', true);
@@ -123,7 +123,10 @@ module.exports = function (RED) {
 				node.status({ fill: "red", shape: "dot", text: "already clip" });
 				return;
 			}
-
+			if (!_songuri) {
+				node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
+				return;
+			}
 			node.context().set('clip', true);
 			client.clip(_songuri, 30, (err, result) => {
 				helper.handleSonosApiRequest(node, err, result, msg, null, null);
