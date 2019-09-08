@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-sonos-http-api",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Node RED nodes for Sonos devices, using sonos-http-api",
   "main": "index.js",
   "author": "naimo84",
