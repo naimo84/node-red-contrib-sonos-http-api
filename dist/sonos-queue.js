@@ -43,7 +43,15 @@ module.exports = function (RED) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
             return;
         }
-        var payload = JSON.parse(msg.payload);
+        var payload = {};
+        if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+            if (typeof msg.payload !== 'object') {
+                payload = JSON.parse(msg.payload);
+            }
+            else {
+                payload = msg.payload;
+            }
+        }
         var _songuri = node.songuri;
         var _name = node.name;
         if (payload.songuri)

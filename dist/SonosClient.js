@@ -121,7 +121,6 @@ var SonosClient = /** @class */ (function () {
         var urls = [this.configNode.ip, this.name, action];
         urls = urls.concat(args);
         var url = urls.join('/');
-        console.log(url);
         var options = {};
         if (this.configNode.username) {
             options = {

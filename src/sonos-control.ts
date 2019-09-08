@@ -59,9 +59,15 @@ module.exports = function (RED) {
 	}
 
 	function handleInputMsg(node: SonosNode, configNode: ConfigNode, msg: Message, player: string) {
-		var payload = "";
-		if (msg.payload !== null && msg.payload !== undefined && msg.payload)
-			payload = "" + msg.payload;
+		var payload: any = {};
+		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+			if (typeof msg.payload !== 'object') {
+				payload = JSON.parse(msg.payload);
+			} else {
+				payload = msg.payload;
+			}
+		}
+		
 		payload = payload.toLowerCase();
 		var newPayload = new PayLoad();
 

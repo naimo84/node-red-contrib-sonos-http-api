@@ -32,8 +32,14 @@ module.exports = function (RED) {
     }
     function handleInputMsg(node, configNode, msg, player) {
         var payload = {};
-        if (msg.payload !== null && msg.payload !== undefined && msg.payload)
-            payload = JSON.parse(msg.payload);
+        if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+            if (typeof msg.payload !== 'object') {
+                payload = JSON.parse(msg.payload);
+            }
+            else {
+                payload = msg.payload;
+            }
+        }
         var topic = "";
         if (msg.topic !== null && msg.topic !== undefined && msg.topic)
             topic = msg.topic;

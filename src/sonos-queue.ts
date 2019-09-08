@@ -52,7 +52,14 @@ module.exports = function (RED) {
 			return;
 		}
 
-		var payload = JSON.parse(msg.payload);
+		var payload: any = {};
+		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+			if (typeof msg.payload !== 'object') {
+				payload = JSON.parse(msg.payload);
+			} else {
+				payload = msg.payload;
+			}
+		}
 
 		var _songuri = node.songuri;
 		var _name = node.name;

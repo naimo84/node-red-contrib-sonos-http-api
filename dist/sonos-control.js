@@ -33,9 +33,15 @@ module.exports = function (RED) {
         });
     }
     function handleInputMsg(node, configNode, msg, player) {
-        var payload = "";
-        if (msg.payload !== null && msg.payload !== undefined && msg.payload)
-            payload = "" + msg.payload;
+        var payload = {};
+        if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+            if (typeof msg.payload !== 'object') {
+                payload = JSON.parse(msg.payload);
+            }
+            else {
+                payload = msg.payload;
+            }
+        }
         payload = payload.toLowerCase();
         var newPayload = new PayLoad();
         var topic = "";

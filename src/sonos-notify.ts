@@ -33,8 +33,8 @@ module.exports = function (RED) {
 		node.clip = config.clip;
 		node.clipall = config.clipall;
 
-		node.on('input', function (msg: Message) {
-			helper.preprocessInputMsg(node, configNode, msg, function (device) {
+		node.on('input', (msg: Message) => {			
+			helper.preprocessInputMsg(node, configNode, msg, (device) => {
 				handleInputMsg(node, configNode, msg, device.player);
 			});
 		});
@@ -43,15 +43,21 @@ module.exports = function (RED) {
 
 	function handleInputMsg(node, configNode: ConfigNode, msg: Message, player) {
 		var payload: any = {};
-		if (msg.payload !== null && msg.payload !== undefined && msg.payload)
-			payload = JSON.parse(msg.payload);
+		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+			if (typeof msg.payload !== 'object') {
+				payload = JSON.parse(msg.payload);
+			} else {
+				payload = msg.payload;
+			}
+		}
 
 		var topic = "";
 		if (msg.topic !== null && msg.topic !== undefined && msg.topic)
 			topic = msg.topic;
 
 		if (topic.indexOf('set')) {
-			var topics = topic.split('/');
+			var topics = topic.split('/');				
+		
 			if (topics && topics.length >= 4) {
 				player = topics[2];
 			}
@@ -71,7 +77,7 @@ module.exports = function (RED) {
 			_command = "clipall";
 			_songuri = node.clipall;
 		}
-
+		
 		var client = new SonosClient(player, configNode);
 		if (client === null || client === undefined) {
 			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });

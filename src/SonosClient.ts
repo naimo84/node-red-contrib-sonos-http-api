@@ -198,7 +198,7 @@ export default class SonosClient {
 
         urls = urls.concat(args);
         let url = urls.join('/');
-        console.log(url);
+       
         let options = {};
         if (this.configNode.username) {
             options = {
