@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.3...v0.2.4) (2019-09-08)
+
+
+### Features
+
+* msg.payload can contain clip, preset, clippall ([cde9069](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/cde9069))
+
 ### 0.2.3 (2019-09-08)
 
 
