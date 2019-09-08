@@ -8,9 +8,9 @@
             clipall: { value: "" },
             player: { value: "" }
         },
-        inputs: 1,                       
-        outputs: 0,                     
-        icon: "sonos.png",      
+        inputs: 1,
+        outputs: 0,
+        icon: "sonos.png",
         color: "#FFFFFF",
         label: function () {
             return this.name || "Notify Sonos";
@@ -83,8 +83,46 @@
 
 
 <script type="text/x-red" data-help-name="sonos-http-api-notify">
-    <!--
+   
     <p>A node to notify via Sonos device</p>
    
+    <h2>Inputs</h2>
+    
+    <dl class="message-properties">
+        <dt>msg.player<span class="property-type">string</span></dt>
+        <dd> Sonos playername (e.g. Living room)</dd>
+        <dt>msg.payload</dt>
+        <dd>
+            <ul>
+            <li>preset - selected play will play the preset</li>
+            <li>clip - selected player will play the clip</li> 
+            <li>clipall - All player will play the clip</li>
+            </ul>
+        </dd>
+    </dl>
+
+    <h3>preset</h3>
+    <p>a preset is a json-file, located in the sonos-http-api folder.</p>
+    <p>for example:</p>
+    <pre>
+    {
+        "players": [
+          { "roomName": "room1", "volume": 15},
+          {"roomName": "room2", "volume": 25}
+        ],
+        "state": "stopped",
+        "favorite": "my favorite name",
+        "uri": "x-rincon-stream:RINCON_0000000000001400",
+        "playMode": {
+          "shuffle": true
+        },
+        "pauseOthers": true
+        "sleep": 600
+      }
+    </pre>
+    <p>more information: <a href="https://github.com/jishi/node-sonos-http-api#preset" target:"_blank">https://github.com/jishi/node-sonos-http-api#preset</a></p>
+
+    <h3>clip and clipall</h3>
+    <p>more information: <a href="https://github.com/jishi/node-sonos-http-api#clip" target:"_blank">    https://github.com/jishi/node-sonos-http-api#clip</a></p>
 
 </script>

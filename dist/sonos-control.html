@@ -129,17 +129,20 @@
 
 
 <script type="text/x-red" data-help-name="sonos-http-api-control">
-    <!--
+   
     <p>A node to control Sonos device</p>
     <p>
         Control command can be sent either via simple input payload, or directly set within the node controls as a standard action.
     </p>
 
     <h3>How to use</h3>
-    <h3>Input (optional)</h3>
     
+    <h2>Inputs</h2>
+
     <dl class="message-properties">
-        <dt>payload
+        <dt>msg.player<span class="property-type">string</span></dt>
+        <dd> Sonos playername (e.g. Living room)</dd>
+        <dt>msg.payload
             <span class="property-type">string</span>
         </dt>
         <dd>Accepted values:

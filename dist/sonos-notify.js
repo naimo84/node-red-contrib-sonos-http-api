@@ -43,25 +43,31 @@ module.exports = function (RED) {
         var topic = "";
         if (msg.topic !== null && msg.topic !== undefined && msg.topic)
             topic = msg.topic;
+        if (msg.player !== null && msg.player !== undefined && msg.player)
+            player = msg.player;
         if (topic.indexOf('set')) {
             var topics = topic.split('/');
             if (topics && topics.length >= 4) {
                 player = topics[2];
             }
         }
-        var _command = payload.command;
-        var _songuri = payload.uri;
-        if (node.preset) {
+        var _command = "";
+        var _songuri = "";
+        if (node.preset || payload.preset) {
             _command = "preset";
-            _songuri = node.preset;
+            _songuri = payload.preset ? payload.preset : node.preset;
         }
-        if (node.clip) {
+        else if (node.clip || payload.clip) {
             _command = "clip";
-            _songuri = node.clip;
+            _songuri = payload.clip ? payload.clip : node.clip;
         }
-        if (node.clipall) {
+        else if (node.clipall || payload.clipall) {
             _command = "clipall";
-            _songuri = node.clipall;
+            _songuri = payload.clip ? payload.clipall : node.clipall;
+        }
+        else if (payload.command) {
+            _command = payload.command;
+            _songuri = payload.uri;
         }
         var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {

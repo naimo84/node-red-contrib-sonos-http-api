@@ -35,12 +35,25 @@ module.exports = function (RED) {
 	}
 
 	function setSonosQueue(node, msg, player, configNode: ConfigNode) {
+		var payload: any = {};
+		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
+			if (typeof msg.payload !== 'object') {
+				payload = JSON.parse(msg.payload);
+			} else {
+				payload = msg.payload;
+			}
+		}
+
 		var topic = "";
 		if (msg.topic !== null && msg.topic !== undefined && msg.topic)
 			topic = msg.topic;
 
+		if (msg.player !== null && msg.player !== undefined && msg.player)
+			player = msg.player;
+
 		if (topic.indexOf('set')) {
 			var topics = topic.split('/');
+
 			if (topics && topics.length >= 4) {
 				player = topics[2];
 			}
@@ -50,15 +63,6 @@ module.exports = function (RED) {
 		if (client === null || client === undefined) {
 			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
 			return;
-		}
-
-		var payload: any = {};
-		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
-			if (typeof msg.payload !== 'object') {
-				payload = JSON.parse(msg.payload);
-			} else {
-				payload = msg.payload;
-			}
 		}
 
 		var _songuri = node.songuri;

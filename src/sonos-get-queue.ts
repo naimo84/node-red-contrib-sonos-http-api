@@ -15,7 +15,7 @@ module.exports = function (RED) {
 		var isValid = helper.validateConfigNode(node, configNode);
 		if (!isValid)
 			return;
-	
+
 		node.status({});
 
 		node.on('input', (msg) => {
@@ -25,7 +25,10 @@ module.exports = function (RED) {
 		});
 	}
 
-	function getSonosCurrentQueue(node: Node, msg, player:string, configNode: ConfigNode) {
+	function getSonosCurrentQueue(node: Node, msg, player: string, configNode: ConfigNode) {
+		if (msg.player !== null && msg.player !== undefined && msg.player)
+			player = msg.player;
+
 		var client = new SonosClient(player, configNode);
 		if (client === null || client === undefined) {
 			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
@@ -46,11 +49,11 @@ module.exports = function (RED) {
 				}
 				return;
 			}
-			if (queueObj === null || queueObj === undefined ) {
+			if (queueObj === null || queueObj === undefined) {
 				node.status({ fill: "red", shape: "dot", text: "invalid current queue retrieved" });
 				return;
 			}
-		
+
 			msg.payload = queueObj;
 			node.send(msg);
 		});

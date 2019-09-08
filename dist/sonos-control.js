@@ -42,17 +42,19 @@ module.exports = function (RED) {
                 payload = msg.payload;
             }
         }
-        payload = payload.toLowerCase();
-        var newPayload = new PayLoad();
         var topic = "";
         if (msg.topic !== null && msg.topic !== undefined && msg.topic)
             topic = msg.topic;
+        if (msg.player !== null && msg.player !== undefined && msg.player)
+            player = msg.player;
         if (topic.indexOf('set')) {
             var topics = topic.split('/');
             if (topics && topics.length >= 4) {
                 player = topics[2];
             }
         }
+        payload = payload.toLowerCase();
+        var newPayload = new PayLoad();
         var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
