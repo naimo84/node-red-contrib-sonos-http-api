@@ -20,7 +20,7 @@ var SonosHelper = /** @class */ (function () {
             callback(configNode);
         return;
     };
-    SonosHelper.prototype.handleSonosApiRequest = function (node, err, result, msg, successString, failureString) {
+    SonosHelper.prototype.handleSonosApiRequest = function (node, err, result, msg, successString, failureString, send, done) {
         if (err) {
             node.error(err);
             if (!failureString)
@@ -28,10 +28,29 @@ var SonosHelper = /** @class */ (function () {
             node.status({ fill: "red", shape: "dot", text: failureString });
             return;
         }
-        msg.payload = result;
-        if (!successString)
-            successString = "request success";
-        node.status({ fill: "blue", shape: "dot", text: successString });
+        if (err) {
+            if (done) {
+                done(err);
+            }
+            else {
+                node.error(err, msg);
+            }
+            send([null, { payload: err }]);
+            if (!failureString)
+                failureString = "failed to execute request";
+            node.status({ fill: "red", shape: "dot", text: failureString });
+            return;
+        }
+        else {
+            send([{ payload: "OK" }, null]);
+            msg.payload = result;
+            if (!successString)
+                successString = "request success";
+            node.status({ fill: "blue", shape: "dot", text: successString });
+            if (done) {
+                done();
+            }
+        }
     };
     return SonosHelper;
 }());

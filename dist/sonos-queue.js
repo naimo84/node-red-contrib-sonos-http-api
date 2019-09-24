@@ -22,13 +22,14 @@ module.exports = function (RED) {
             node.position = "";
         }
         node.positioninqueue = n.positioninqueue;
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
+            send = send || node.send;
             helper.preprocessInputMsg(node, configNode, msg, function (device) {
-                setSonosQueue(node, msg, device.player, configNode);
+                setSonosQueue(node, msg, device.player, configNode, send, done);
             });
         });
     }
-    function setSonosQueue(node, msg, player, configNode) {
+    function setSonosQueue(node, msg, player, configNode, send, done) {
         var payload = {};
         if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
             if (typeof msg.payload !== 'object') {
@@ -65,7 +66,7 @@ module.exports = function (RED) {
         }
         else if (node.position === "directplay" || payload.position === "directplay") {
             client.play(_songuri, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, null, null);
+                helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
             });
         }
         else if (node.position === "favourite" || payload.position === "favourite") {
@@ -73,7 +74,7 @@ module.exports = function (RED) {
             if (payload.favourite)
                 _favourite = payload.favourite;
             client.favourite(_favourite, payload.volume || 30, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, null, null);
+                helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
             });
         }
         else if (node.position === "tuneinradio" || payload.position === "tuneinradio") {

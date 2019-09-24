@@ -34,16 +34,18 @@ module.exports = function (RED) {
 		node.clip = config.clip;
 		node.clipall = config.clipall;
 
-		node.on('input', (msg: Message) => {
+		node.on('input', (msg: Message, send, done) => {
+			send = send || node.send
 			helper.preprocessInputMsg(node, configNode, msg, (device) => {
-				handleInputMsg(node, configNode, msg, device.player);
+				handleInputMsg(node, configNode, msg, device.player, send, done);
 			});
 		});
 	}
 
 
-	function handleInputMsg(node, configNode: ConfigNode, msg: Message, player) {
+	function handleInputMsg(node, configNode: ConfigNode, msg: Message, player, send, done) {
 		var payload: any = {};
+
 		if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
 			if (typeof msg.payload !== 'object') {
 				payload = JSON.parse(msg.payload);
@@ -93,11 +95,12 @@ module.exports = function (RED) {
 
 			if (!_songuri) {
 				node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
+				send([null, { payload: "msg.preset is not defined" }])
 				return;
 			}
 
 			client.preset(_songuri, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null);
+				helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null, send, done);
 			});
 
 		}
@@ -112,7 +115,7 @@ module.exports = function (RED) {
 			}
 			node.context().set('clip', true);
 			client.clipall(_songuri, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null);
+				helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null, send, done);
 			});
 			setTimeout(() => {
 				node.context().set('clip', false);
@@ -129,18 +132,14 @@ module.exports = function (RED) {
 			}
 			node.context().set('clip', true);
 			client.clip(_songuri, 30, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, null, null);
+				helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
 			});
 
 			setTimeout(() => {
 				node.context().set('clip', false);
 			}, 10 * 1000);
 		}
-
-		node.send(msg);
 	}
-
-
 
 	RED.nodes.registerType('sonos-http-api-notify', Node);
 }

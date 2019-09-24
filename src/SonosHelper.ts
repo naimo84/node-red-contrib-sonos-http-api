@@ -27,7 +27,7 @@ export class SonosHelper {
     }
 
 
-    handleSonosApiRequest(node, err, result, msg, successString, failureString) {
+    handleSonosApiRequest(node, err, result, msg, successString, failureString, send, done) {
         if (err) {
             node.error(err);
             if (!failureString)
@@ -36,11 +36,28 @@ export class SonosHelper {
             return;
         }
 
-        msg.payload = result;
+        if (err) {
+            if (done) {
+                done(err)
+            } else {
+                node.error(err, msg);
+            }
+            send([null, { payload: err }]);
+            if (!failureString)
+                failureString = "failed to execute request";
+            node.status({ fill: "red", shape: "dot", text: failureString });
+            return;
+        } else {
+            send([{ payload: "OK" }, null]);
+            msg.payload = result;
+            if (!successString)
+                successString = "request success";
+            node.status({ fill: "blue", shape: "dot", text: successString });
 
-        if (!successString)
-            successString = "request success";
-        node.status({ fill: "blue", shape: "dot", text: successString });
+            if (done) {
+                done();
+            }
+        }
     }
 }
 

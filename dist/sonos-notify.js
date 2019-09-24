@@ -24,13 +24,14 @@ module.exports = function (RED) {
         node.preset = config.preset;
         node.clip = config.clip;
         node.clipall = config.clipall;
-        node.on('input', function (msg) {
+        node.on('input', function (msg, send, done) {
+            send = send || node.send;
             helper.preprocessInputMsg(node, configNode, msg, function (device) {
-                handleInputMsg(node, configNode, msg, device.player);
+                handleInputMsg(node, configNode, msg, device.player, send, done);
             });
         });
     }
-    function handleInputMsg(node, configNode, msg, player) {
+    function handleInputMsg(node, configNode, msg, player, send, done) {
         var payload = {};
         if (msg.payload !== null && msg.payload !== undefined && msg.payload) {
             if (typeof msg.payload !== 'object') {
@@ -78,10 +79,11 @@ module.exports = function (RED) {
             node.status({ fill: "green", shape: "dot", text: _songuri });
             if (!_songuri) {
                 node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
+                send([null, { payload: "msg.preset is not defined" }]);
                 return;
             }
             client.preset(_songuri, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null);
+                helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null, send, done);
             });
         }
         else if (_command === "clipall") {
@@ -95,7 +97,7 @@ module.exports = function (RED) {
             }
             node.context().set('clip', true);
             client.clipall(_songuri, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null);
+                helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null, send, done);
             });
             setTimeout(function () {
                 node.context().set('clip', false);
@@ -112,13 +114,12 @@ module.exports = function (RED) {
             }
             node.context().set('clip', true);
             client.clip(_songuri, 30, function (err, result) {
-                helper.handleSonosApiRequest(node, err, result, msg, null, null);
+                helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
             });
             setTimeout(function () {
                 node.context().set('clip', false);
             }, 10 * 1000);
         }
-        node.send(msg);
     }
     RED.nodes.registerType('sonos-http-api-notify', Node);
 };
