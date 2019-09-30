@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.5...v0.2.6) (2019-09-30)
+
+
+### Bug Fixes
+
+* clipall instead of clip ([8f9ab61](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9ab61))
+
+
+### Features
+
+* looking forward to node-red v1.0.0 ([8f9a0db](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9a0db))
+
+### [0.2.7](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.5...v0.2.7) (2019-09-30)
+
+
+### Bug Fixes
+
+* clipall instead of clip ([8f9ab61](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9ab61))
+
+
+### Features
+
+* looking forward to node-red v1.0.0 ([8f9a0db](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9a0db))
+
+### [0.2.6](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.5...v0.2.6) (2019-09-30)
+
+
+### Bug Fixes
+
+* clipall instead of clip ([8f9ab61](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9ab61))
+
+
+### Features
+
+* looking forward to node-red v1.0.0 ([8f9a0db](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/8f9a0db))
+
 ### [0.2.5](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.4...v0.2.5) (2019-09-08)
 
 

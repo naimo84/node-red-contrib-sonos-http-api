@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-sonos-http-api",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Node RED nodes for Sonos devices, using sonos-http-api",
   "main": "index.js",
   "author": "naimo84",
@@ -43,19 +43,19 @@
     "axios": "^0.19.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.1",
-    "gulp-typescript": "^5.0.1",
-    "typescript": "^3.4.5",
-    "commitlint": "^8.1.0",
-    "husky": "^3.0.5",
+    "@types/axios": "^0.14.0",
     "@types/node": "^12.0.10",
     "@types/node-red": "^0.20.0",
-    "@types/axios": "^0.14.0",
+    "commitlint": "^8.2.0",
+    "gulp": "^4.0.1",
+    "gulp-typescript": "^5.0.1",
+    "husky": "^3.0.7",
     "mocha": "6.2.0",
     "node-red": "0.20.7",
     "node-red-node-test-helper": "^0.2.3",
+    "should": "13.2.3",
     "standard-version": "^7.0.0",
-    "should": "13.2.3"
+    "typescript": "^3.4.5"
   },
   "commitlint": {
     "format": {
