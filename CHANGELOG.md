@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.6...v0.2.7) (2019-10-02)
+
+
+### Bug Fixes
+
+* set volume in control node ([ff0f7a0](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/ff0f7a0))
+
+### [0.2.7](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.6...v0.2.7) (2019-10-02)
+
+
+### Bug Fixes
+
+* set volume in control node ([ff0f7a0](https://github.com/naimo84/node-red-contrib-sonos-http-api/commit/ff0f7a0))
+
 ### [0.2.6](https://github.com/naimo84/node-red-contrib-sonos-http-api/compare/v0.2.5...v0.2.6) (2019-09-30)
 
 
