@@ -35,14 +35,14 @@ var SonosHelper = /** @class */ (function () {
             else {
                 node.error(err, msg);
             }
-            send([null, { payload: err }]);
+            node.send([null, { payload: err }]);
             if (!failureString)
                 failureString = "failed to execute request";
             node.status({ fill: "red", shape: "dot", text: failureString });
             return;
         }
         else {
-            send([{ payload: "OK" }, null]);
+            node.send([{ payload: "OK" }, null]);
             msg.payload = result;
             if (!successString)
                 successString = "request success";

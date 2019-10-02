@@ -86,59 +86,80 @@ module.exports = function (RED) {
 		}
 
 		var client = new SonosClient(player, configNode);
-		if (client === null || client === undefined) {
-			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
-			return;
-		}
-		else if (_command === "preset") {
-			node.status({ fill: "green", shape: "dot", text: _songuri });
 
-			if (!_songuri) {
-				node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
-				send([null, { payload: "msg.preset is not defined" }])
+		client.getCurrentState((err, state) => {
+			if (err) {
+				node.error(JSON.stringify(err));
+				node.status({ fill: "red", shape: "dot", text: "failed to retrieve current state" });
+				return;
+			}
+			if (state === null || state === undefined) {
+				node.status({ fill: "red", shape: "dot", text: "invalid current state retrieved" });
 				return;
 			}
 
-			client.preset(_songuri, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null, send, done);
-			});
+			let currentState = state;
 
-		}
-		else if (_command === "clipall") {
-			if (node.context().get('clip') === true) {
-				node.status({ fill: "red", shape: "dot", text: "already clipall" });
+			if (client === null || client === undefined) {
+				node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
 				return;
 			}
-			if (!_songuri) {
-				node.status({ fill: "red", shape: "dot", text: "msg.clipall is not defined" });
-				return;
-			}
-			node.context().set('clip', true);
-			client.clipall(_songuri, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null, send, done);
-			});
-			setTimeout(() => {
-				node.context().set('clip', false);
-			}, 10 * 1000);
-		}
-		else if (_command === "clip") {
-			if (node.context().get('clip') === true) {
-				node.status({ fill: "red", shape: "dot", text: "already clip" });
-				return;
-			}
-			if (!_songuri) {
-				node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
-				return;
-			}
-			node.context().set('clip', true);
-			client.clip(_songuri, 30, (err, result) => {
-				helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
-			});
+			else if (_command === "preset") {
+				node.status({ fill: "green", shape: "dot", text: _songuri });
 
-			setTimeout(() => {
-				node.context().set('clip', false);
-			}, 10 * 1000);
-		}
+				if (!_songuri) {
+					node.status({ fill: "red", shape: "dot", text: "msg.preset is not defined" });
+					send([null, { payload: "msg.preset is not defined" }])
+					return;
+				}
+
+				client.preset(_songuri, (err, result) => {
+					helper.handleSonosApiRequest(node, err, result, msg, "preset played " + _songuri, null, send, done);
+				});
+
+			}
+			else if (_command === "clipall") {
+				if (node.context().get('clip') === true) {
+					node.status({ fill: "red", shape: "dot", text: "already clipall" });
+					return;
+				}
+				if (!_songuri) {
+					node.status({ fill: "red", shape: "dot", text: "msg.clipall is not defined" });
+					return;
+				}
+				node.context().set('clip', true);
+				client.clipall(_songuri, (err, result) => {
+					helper.handleSonosApiRequest(node, err, result, msg, "clip " + _songuri, null, send, done);
+				});
+				setTimeout(() => {
+					node.context().set('clip', false);
+				}, 10 * 1000);
+			}
+			else if (_command === "clip") {
+				if (node.context().get('clip') === true) {
+					node.status({ fill: "red", shape: "dot", text: "already clip" });
+					return;
+				}
+				if (!_songuri) {
+					node.status({ fill: "red", shape: "dot", text: "msg.clip is not defined" });
+					return;
+				}
+				node.context().set('clip', true);
+				client.clip(_songuri, 30, (err, result) => {
+					helper.handleSonosApiRequest(node, err, result, msg, null, null, send, done);
+				});
+
+				setTimeout(() => {
+					node.context().set('clip', false);
+				}, 10 * 1000);
+			}
+			if (currentState && currentState.currentTrack && currentState.currentTrack.uri) {
+				console.log(currentState.currentTrack.uri);
+				if(currentState.playbackState !== 'STOPPED'){
+
+				}
+			}
+		});
 	}
 
 	RED.nodes.registerType('sonos-http-api-notify', Node);

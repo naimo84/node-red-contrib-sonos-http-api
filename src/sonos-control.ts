@@ -68,25 +68,21 @@ module.exports = function (RED) {
 		if (msg.player !== null && msg.player !== undefined && msg.player)
 			player = msg.player;
 
-		if (topic.indexOf('set')) {
+		if (topic.length>0 && topic.indexOf('set')) {
 			var topics = topic.split('/');
 
 			if (topics && topics.length >= 4) {
 				player = topics[2];
 			}
 		}
-
-		if (payload) {
-			payload = payload.toLowerCase();
-		}
+		
 		var newPayload = new PayLoad();
-
 		var client = new SonosClient(player, configNode);
 		if (client === null || client === undefined) {
 			node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
 			return;
 		}
-
+	
 		if (payload === "play" || payload === "pause" || payload === "stop" || payload === "toggle" || payload === "playpause") {
 			newPayload = { mode: payload };
 		}
@@ -96,7 +92,7 @@ module.exports = function (RED) {
 		else if (payload === "mute" || payload === "unmute" || payload === "vol_up" || payload === "vol_down" || payload === "vol+" || payload === "vol+") {
 			newPayload = { volume: payload };
 		}
-		else if (payload.indexOf("+") && parseInt(payload) > 0 && parseInt(payload) <= 100) {
+		else if (payload.indexOf("+") > 0 && parseInt(payload) > 0 && parseInt(payload) <= 100) {
 			newPayload = { volume: "vol_up", volstep: parseInt(payload) };
 		}
 		else if (payload.indexOf("-") && parseInt(payload) < 0 && parseInt(payload) >= -100) {
@@ -140,7 +136,7 @@ module.exports = function (RED) {
 			handleCommand(node, msg, client, _command, send, done);
 
 		if (newPayload.volume || node.volume)
-			handleVolumeCommand(node, msg, client, payload, send, done);
+			handleVolumeCommand(node, msg, client, newPayload, send, done);
 		
 	}
 
@@ -265,12 +261,13 @@ module.exports = function (RED) {
 		}
 
 		switch (_volumeFunction) {
-			case "vol_set":
+			case "vol_set":				
 				var volume_val = parseInt(_volumeValue);
 				if (isNaN(volume_val) || volume_val < 0 || volume_val > 100) {
 					node.status({ fill: "red", shape: "dot", text: "invalid value for volume" });
 					break;
 				}
+				
 				client.setVolume(_volumeValue, (err, result) => {
 					helper.handleSonosApiRequest(node, err, result, msg, "vol: " + String(_volumeValue), null, send, done);
 				});

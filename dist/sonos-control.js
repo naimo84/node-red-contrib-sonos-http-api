@@ -43,14 +43,11 @@ module.exports = function (RED) {
             topic = msg.topic;
         if (msg.player !== null && msg.player !== undefined && msg.player)
             player = msg.player;
-        if (topic.indexOf('set')) {
+        if (topic.length > 0 && topic.indexOf('set')) {
             var topics = topic.split('/');
             if (topics && topics.length >= 4) {
                 player = topics[2];
             }
-        }
-        if (payload) {
-            payload = payload.toLowerCase();
         }
         var newPayload = new PayLoad();
         var client = new SonosClient_1.default(player, configNode);
@@ -67,7 +64,7 @@ module.exports = function (RED) {
         else if (payload === "mute" || payload === "unmute" || payload === "vol_up" || payload === "vol_down" || payload === "vol+" || payload === "vol+") {
             newPayload = { volume: payload };
         }
-        else if (payload.indexOf("+") && parseInt(payload) > 0 && parseInt(payload) <= 100) {
+        else if (payload.indexOf("+") > 0 && parseInt(payload) > 0 && parseInt(payload) <= 100) {
             newPayload = { volume: "vol_up", volstep: parseInt(payload) };
         }
         else if (payload.indexOf("-") && parseInt(payload) < 0 && parseInt(payload) >= -100) {
@@ -108,7 +105,7 @@ module.exports = function (RED) {
         if (_command)
             handleCommand(node, msg, client, _command, send, done);
         if (newPayload.volume || node.volume)
-            handleVolumeCommand(node, msg, client, payload, send, done);
+            handleVolumeCommand(node, msg, client, newPayload, send, done);
     }
     function handleCommand(node, msg, client, cmd, send, done) {
         switch (cmd) {

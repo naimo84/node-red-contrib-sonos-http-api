@@ -38,6 +38,8 @@ export interface SonosState {
     playerState: string;
     zonePlayMode: ZonePlayMode;
     equalizer: Equalizer;
+    playbackState: string,
+    playMode: any
 }
 
 export interface ConfigNode {
@@ -198,7 +200,7 @@ export default class SonosClient {
 
         urls = urls.concat(args);
         let url = urls.join('/');
-       
+
         let options = {};
         if (this.configNode.username) {
             options = {
