@@ -64,10 +64,10 @@ module.exports = function (RED) {
         else if (payload === "mute" || payload === "unmute" || payload === "vol_up" || payload === "vol_down" || payload === "vol+" || payload === "vol+") {
             newPayload = { volume: payload };
         }
-        else if (payload.indexOf("+") > 0 && parseInt(payload) > 0 && parseInt(payload) <= 100) {
+        else if (payload.indexOf("+") >= 0 && parseInt(payload) > 0 && parseInt(payload) <= 100) {
             newPayload = { volume: "vol_up", volstep: parseInt(payload) };
         }
-        else if (payload.indexOf("-") && parseInt(payload) < 0 && parseInt(payload) >= -100) {
+        else if (payload.indexOf("-") >= 0 && parseInt(payload) < 0 && parseInt(payload) >= -100) {
             newPayload = { volume: "vol_down", volstep: -parseInt(payload) };
         }
         else if (!isNaN(parseInt(payload)) && parseInt(payload) >= 0 && parseInt(payload) <= 100) {
@@ -131,7 +131,7 @@ module.exports = function (RED) {
                         node.status({ fill: "red", shape: "dot", text: "invalid current state retrieved" });
                         return;
                     }
-                    if (state.playerState === "playing") {
+                    if (state.playbackState.toUpperCase() === "PLAYING") {
                         client.pause(function (err, result) {
                             helper.handleSonosApiRequest(node, err, result, msg, "paused", null, send, done);
                         });
