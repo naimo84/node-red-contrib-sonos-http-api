@@ -21,6 +21,8 @@ module.exports = function status(RED) {
         });
     }
     function getSonosCurrentState(node, msg, player, configNode) {
+		if (msg.player !== null && msg.player !== undefined && msg.player)
+            player = msg.player;
         var client = new SonosClient_1.default(player, configNode);
         if (client === null || client === undefined) {
             node.status({ fill: "red", shape: "dot", text: "sonos client is null" });
