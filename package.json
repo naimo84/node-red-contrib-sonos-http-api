@@ -54,7 +54,7 @@
     "node-red": "0.20.7",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",
-    "standard-version": "^7.0.0",
+    "standard-version": "^8.0.1",
     "typescript": "^3.6.3"
   },
   "commitlint": {
