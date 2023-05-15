@@ -4,7 +4,7 @@
 
 This Node RED module connects Sonos HTTP Api with Node-RED.
 
-The big advantage of sonos-http-api is the fact, that Node RED and the sonos players musst not be int the same subnet.
+The big advantage of sonos-http-api is the fact, that Node RED and the sonos players do not need to be in the same subnet.
 
 ![play_notify](examples/advantage.png)
 
